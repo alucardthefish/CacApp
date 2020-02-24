@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.sop.cacapp.Object.Profile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,24 +81,22 @@ public class RegisterActivity extends AppCompatActivity {
                     map.put("email", email);
                     map.put("pass", pass);
 
+                    Profile profile = new Profile();
+
                     FirebaseUser user = mAuth.getCurrentUser();
                     String id = user.getUid();
 
                     mDataBase.collection("users")
-                            .add(map)
-                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            .document(id)
+                            .collection("data")
+                            .document("profile")
+                            .set(profile)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    // Send to main activity
+                                public void onSuccess(Void aVoid) {
                                     Intent i = new Intent(RegisterActivity.this, MainActivity.class);
                                     startActivity(i);
                                     finish();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(RegisterActivity.this, "Error agregando usuario", Toast.LENGTH_LONG).show();
                                 }
                             });
                 } else {
