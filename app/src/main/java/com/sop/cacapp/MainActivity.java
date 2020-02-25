@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,6 +16,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
 
     private Button btnExit;
+    private TextView tvUserName;
+    private ImageView ivUserPic;
     private FirebaseAuth mAuth;
 
     @Override
@@ -22,6 +26,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+
+        tvUserName = findViewById(R.id.tvUserName);
+
+        ivUserPic = findViewById(R.id.ivLogo);
 
         btnExit = findViewById(R.id.btnExit);
         btnExit.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +54,13 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(i);
             finish();
+        } else {
+            tvUserName.setText("Usuario: " + currentUser.getDisplayName());
+            ivUserPic.setImageResource(R.drawable.icons8femaleprofile100);
+            if (currentUser.getPhotoUrl().toString().equals("male")) {
+                ivUserPic.setImageResource(R.drawable.icons8maleuser100);
+            }
+
         }
     }
 }
