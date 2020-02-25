@@ -12,19 +12,90 @@
         android:id="@+id/eTRegisterEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"/>
+        android:inputType="textEmailAddress"
+        android:hint="Email (*)"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Contraseña"
+        android:hint="Contraseña (*)"
         android:inputType="textPassword"
         android:id="@+id/eTRegisterPassword"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etUserName"
+        android:hint="Nombre (*)"
+        android:layout_margin="10dp"
+        android:inputType="textPersonName"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textSize="18dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="Sexo" />
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/genderOptions"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/rbFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:layout_marginRight="16dp"
+                android:text="Femenino" />
+            <RadioButton
+                android:id="@+id/rbMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="Masculino"/>
+        </RadioGroup>
+    </LinearLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etUserAge"
+        android:hint="Edad"
+        android:layout_margin="10dp"
+        android:inputType="number"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etUserHeight"
+        android:hint="Estatura (cm)"
+        android:layout_margin="10dp"
+        android:inputType="number"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etUserWeight"
+        android:hint="Peso (kg)"
+        android:layout_margin="10dp"
+        android:inputType="number"/>
 
     <Button
         android:id="@+id/btnToRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:textColor="@android:color/white"
         android:text="Registrar Cuenta"/>
 
 </LinearLayout>

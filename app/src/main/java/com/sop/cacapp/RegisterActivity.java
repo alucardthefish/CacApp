@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,10 +31,20 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText etEmail;
     private EditText etPass;
+    private EditText etName;
+    private EditText etAge;
+    private EditText etHeight;
+    private EditText etWeight;
+    private RadioGroup rgGender;
     private Button btnRegister;
 
     private String email;
     private String pass;
+    private String name;
+    private int age;
+    private int height;
+    private double weight;
+    private String gender;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDataBase;
@@ -47,10 +59,20 @@ public class RegisterActivity extends AppCompatActivity {
 
         etEmail = findViewById(R.id.eTRegisterEmail);
         etPass = findViewById(R.id.eTRegisterPassword);
+        etName = findViewById(R.id.etUserName);
+        etAge = findViewById(R.id.etUserAge);
+        etHeight = findViewById(R.id.etUserHeight);
+        etWeight = findViewById(R.id.etUserWeight);
+        rgGender = findViewById(R.id.genderOptions);
         btnRegister = findViewById(R.id.btnToRegister);
 
         email = "";
         pass = "";
+        name = "";
+        age = 0;
+        height = 0;
+        weight = 0.0;
+        gender = "female";
     }
 
     @Override
@@ -61,10 +83,15 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 email = etEmail.getText().toString();
                 pass = etPass.getText().toString();
-                if (!email.isEmpty() && !pass.isEmpty()) {
+                name = etName.getText().toString();
+                age =  Integer.parseInt(etAge.getText().toString());
+                height = Integer.parseInt(etHeight.getText().toString());
+                weight = Double.parseDouble(etWeight.getText().toString());
+                gender = checkGender();
+                if (!email.isEmpty() && !pass.isEmpty() && !name.isEmpty()) {
                     registerUser();
                 } else {
-                    Toast.makeText(RegisterActivity.this, "Los campos no deben ser vacios", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Los campos con * no son obligatorios", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -77,13 +104,29 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(RegisterActivity.this, "Registrado exitosamente!", Toast.LENGTH_LONG).show();
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("email", email);
-                    map.put("pass", pass);
 
-                    Profile profile = new Profile();
+                    Profile profile = new Profile(name,
+                            email,
+                            age,
+                            height,
+                            weight,
+                            gender);
 
                     FirebaseUser user = mAuth.getCurrentUser();
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(name)
+                            .setPhotoUri(Uri.parse(gender)) // Set url gender
+                            .build();
+                    user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(RegisterActivity.this, "Perfil creado", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(RegisterActivity.this, "Perfil no se pudo crear", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                     String id = user.getUid();
 
                     mDataBase.collection("users")
@@ -104,5 +147,14 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private String checkGender() {
+        String gender = "female";
+
+        if (rgGender.getCheckedRadioButtonId() == R.id.rbMale) {
+            gender = "male";
+        }
+        return gender;
     }
 }
