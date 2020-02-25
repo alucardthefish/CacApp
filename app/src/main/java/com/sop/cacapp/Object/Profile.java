@@ -7,17 +7,19 @@ public class Profile {
     private int age;
     private int height;
     private double weight;
+    private String gender;
 
     public Profile(){
 
     }
 
-    public Profile(String name, String email, int age, int height, double weight) {
+    public Profile(String name, String email, int age, int height, double weight, String gender) {
         this.name = name;
         this.email = email;
         this.age = age;
         this.height = height;
         this.weight = weight;
+        this.gender = gender;
     }
 
     public String getName() {
@@ -58,5 +60,13 @@ public class Profile {
 
     public void setWeight(double weight) {
         this.weight = weight;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }
