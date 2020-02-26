@@ -1,6 +1,11 @@
 package com.sop.cacapp;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,8 +15,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sop.cacapp.Fragments.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +27,19 @@ public class MainActivity extends AppCompatActivity {
     private ImageView ivUserPic;
     private FirebaseAuth mAuth;
 
+    // New
+    private TextView tvHeaderUserName;
+    private TextView tvHeaderUserEmail;
+    private ImageView ivHeaderUserIcon;
+    private DrawerLayout drawerLayout;
+    ActionBarDrawerToggle actionBarDrawerToggle;
+    Toolbar toolbar;
+    NavigationView navigationView;
+    // variables for loading fragment
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
+    // End new
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +47,25 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        tvUserName = findViewById(R.id.tvUserName);
+        toolbar = findViewById(R.id.drawer_toolbar);
+        setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.drawer);
+        navigationView = findViewById(R.id.navigationView);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        actionBarDrawerToggle.syncState();
+        // Load main fragment
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.container, new MainFragment());
+        fragmentTransaction.commit();
+
+        tvHeaderUserName = findViewById(R.id.tvHeaderUserEmail);
+        tvHeaderUserEmail = findViewById(R.id.tvHeaderUserEmail);
+        ivHeaderUserIcon = findViewById(R.id.ivHeaderImage);
+
+        /*tvUserName = findViewById(R.id.tvUserName);
 
         ivUserPic = findViewById(R.id.ivLogo);
 
@@ -42,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
                 finish();
             }
-        });
+        });*/
 
     }
 
@@ -50,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
+        /*if (currentUser == null) {
             Intent i = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(i);
             finish();
@@ -61,6 +99,15 @@ public class MainActivity extends AppCompatActivity {
                 ivUserPic.setImageResource(R.drawable.icons8maleuser100);
             }
 
+        }*/
+        if (currentUser != null) {
+            tvHeaderUserName.setText(currentUser.getDisplayName());
+            tvHeaderUserEmail.setText(currentUser.getEmail());
+            if (currentUser.getPhotoUrl().toString().equals("male")) {
+                ivHeaderUserIcon.setImageResource(R.drawable.icons8maleuser100);
+            } else {
+                ivHeaderUserIcon.setImageResource(R.drawable.icons8femaleprofile100);
+            }
         }
     }
 }
