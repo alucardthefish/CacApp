@@ -1,12 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Main Fragment"
+        android:text="Fecha de inicio:"
+        android:paddingTop="30dp"
+        android:paddingBottom="10dp"
+        android:gravity="center"
         android:textSize="24sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Feb 23 2020 9:43"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:padding="10dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Número de idas al baño:"
+        android:paddingTop="50dp"
+        android:paddingBottom="20dp"
+        android:gravity="center"
+        android:textSize="24sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="50dp"
+        android:gravity="center"
+        android:padding="10dp"/>
+
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <TableRow
+            android:gravity="center"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_gravity="center"
+                android:text="Días transcurridos" />
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text=":" />
+
+            <TextView
+                android:paddingRight="10dp"
+                android:text="5" />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_gravity="center"
+                android:text="Frecuencia promedio" />
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text=":" />
+
+            <TextView
+                android:layout_gravity="start"
+                android:text="3.1" />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_gravity="center"
+                android:text="Evaluacion" />
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text=":" />
+
+            <TextView
+                android:layout_gravity="start"
+                android:text="Estreñido" />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_gravity="center"
+                android:text="Ultima evacuación" />
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text=":" />
+
+            <TextView
+                android:layout_gravity="start"
+                android:text="hace 1 dia(s)" />
+        </TableRow>
+    </TableLayout>
+
 
 </LinearLayout>
