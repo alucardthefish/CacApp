@@ -22,7 +22,7 @@
         </item>
     </menu>
 </item>
-    <item android:title="Secundario">
+    <item android:title="Configuración">
         <menu>
             <item
                 android:id="@+id/profile"
@@ -34,6 +34,17 @@
                 android:id="@+id/settings"
                 android:icon="@drawable/ic_list"
                 android:title="Ajustes">
+
+            </item>
+        </menu>
+    </item>
+
+    <item android:title="Cerrar sesión">
+        <menu>
+            <item
+                android:id="@+id/signOut"
+                android:icon="@drawable/ic_exit_to_app"
+                android:title="Salir">
 
             </item>
         </menu>
