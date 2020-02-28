@@ -1,5 +1,11 @@
 package com.sop.cacapp.Object;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import java.time.LocalDateTime;
+
 public class Profile {
 
     private String name;
@@ -8,11 +14,13 @@ public class Profile {
     private int height;
     private double weight;
     private String gender;
+    private LocalDateTime registerDate;
 
     public Profile(){
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public Profile(String name, String email, int age, int height, double weight, String gender) {
         this.name = name;
         this.email = email;
@@ -20,6 +28,7 @@ public class Profile {
         this.height = height;
         this.weight = weight;
         this.gender = gender;
+        this.registerDate = LocalDateTime.now();
     }
 
     public String getName() {
@@ -68,5 +77,9 @@ public class Profile {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public LocalDateTime getRegisterDate() {
+        return registerDate;
     }
 }
