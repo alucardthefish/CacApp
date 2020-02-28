@@ -1,5 +1,6 @@
 package com.sop.cacapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -7,37 +8,36 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sop.cacapp.Fragments.FecalDiaryFragment;
 import com.sop.cacapp.Fragments.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnExit;
-    private TextView tvUserName;
-    private ImageView ivUserPic;
     private FirebaseAuth mAuth;
 
-    // New
+    // New Navigation Drawer variables
     private TextView tvHeaderUserName;
     private TextView tvHeaderUserEmail;
     private ImageView ivHeaderUserIcon;
     private DrawerLayout drawerLayout;
-    ActionBarDrawerToggle actionBarDrawerToggle;
-    Toolbar toolbar;
-    NavigationView navigationView;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private Toolbar toolbar;
+    private NavigationView navigationView;
     // variables for loading fragment
-    FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
     // End new
 
     @Override
@@ -61,26 +61,13 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.container, new MainFragment());
         fragmentTransaction.commit();
 
-        tvHeaderUserName = findViewById(R.id.tvHeaderUserEmail);
-        tvHeaderUserEmail = findViewById(R.id.tvHeaderUserEmail);
-        ivHeaderUserIcon = findViewById(R.id.ivHeaderImage);
+        View header = navigationView.getHeaderView(0); // Instance of header view layout
+        tvHeaderUserName = header.findViewById(R.id.tvHeaderUserName);
+        tvHeaderUserEmail = header.findViewById(R.id.tvHeaderUserEmail);
+        ivHeaderUserIcon = header.findViewById(R.id.ivHeaderImage);
 
-        /*tvUserName = findViewById(R.id.tvUserName);
-
-        ivUserPic = findViewById(R.id.ivLogo);
-
-        btnExit = findViewById(R.id.btnExit);
-        btnExit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Close or log out
-                Toast.makeText(MainActivity.this, "Adios, que se diviertan", Toast.LENGTH_SHORT).show();
-                mAuth.signOut();
-                Intent i = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(i);
-                finish();
-            }
-        });*/
+        // Initialize listeners
+        initListeners();
 
     }
 
@@ -88,18 +75,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        /*if (currentUser == null) {
-            Intent i = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(i);
-            finish();
-        } else {
-            tvUserName.setText("Usuario: " + currentUser.getDisplayName());
-            ivUserPic.setImageResource(R.drawable.icons8femaleprofile100);
-            if (currentUser.getPhotoUrl().toString().equals("male")) {
-                ivUserPic.setImageResource(R.drawable.icons8maleuser100);
-            }
 
-        }*/
         if (currentUser != null) {
             tvHeaderUserName.setText(currentUser.getDisplayName());
             tvHeaderUserEmail.setText(currentUser.getEmail());
@@ -108,6 +84,37 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 ivHeaderUserIcon.setImageResource(R.drawable.icons8femaleprofile100);
             }
+        } else {
+            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(i);
+            finish();
         }
+    }
+
+    private void initListeners() {
+        // Set event handler for navigationView
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @SuppressLint("WrongConstant")
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                drawerLayout.closeDrawer(Gravity.START);
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                switch (menuItem.getItemId()) {
+                    case R.id.home:
+                        fragmentTransaction.replace(R.id.container, new MainFragment());
+                        break;
+                    case R.id.diary:
+                        fragmentTransaction.replace(R.id.container, new FecalDiaryFragment());
+                        break;
+                    case R.id.signOut:
+                        mAuth.signOut();
+                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                        finish();
+                }
+                fragmentTransaction.commit();
+                return false;
+            }
+        });
     }
 }
