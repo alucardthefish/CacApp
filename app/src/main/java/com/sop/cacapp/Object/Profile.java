@@ -1,10 +1,8 @@
 package com.sop.cacapp.Object;
 
-import android.os.Build;
+import com.google.firebase.Timestamp;
 
-import androidx.annotation.RequiresApi;
-
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Profile {
 
@@ -14,13 +12,12 @@ public class Profile {
     private int height;
     private double weight;
     private String gender;
-    private LocalDateTime registerDate;
+    private Timestamp registerDate;
 
     public Profile(){
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public Profile(String name, String email, int age, int height, double weight, String gender) {
         this.name = name;
         this.email = email;
@@ -28,7 +25,7 @@ public class Profile {
         this.height = height;
         this.weight = weight;
         this.gender = gender;
-        this.registerDate = LocalDateTime.now();
+        this.registerDate = new Timestamp(new Date());
     }
 
     public String getName() {
@@ -79,7 +76,7 @@ public class Profile {
         this.gender = gender;
     }
 
-    public LocalDateTime getRegisterDate() {
+    public Timestamp getRegisterDate() {
         return registerDate;
     }
 }
