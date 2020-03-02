@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     // variables for loading fragment
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
+    private FirebaseUser currentUser;
     // End new
 
     @Override
@@ -46,6 +47,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            // Load main fragment
+            fragmentManager = getSupportFragmentManager();
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.container, new MainFragment());
+            fragmentTransaction.commit();
+        }
 
         toolbar = findViewById(R.id.drawer_toolbar);
         setSupportActionBar(toolbar);
@@ -55,11 +64,7 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
-        // Load main fragment
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.container, new MainFragment());
-        fragmentTransaction.commit();
+
 
         View header = navigationView.getHeaderView(0); // Instance of header view layout
         tvHeaderUserName = header.findViewById(R.id.tvHeaderUserName);
@@ -74,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
             tvHeaderUserName.setText(currentUser.getDisplayName());
