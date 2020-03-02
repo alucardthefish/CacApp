@@ -13,19 +13,16 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sop.cacapp.Object.Profile;
+import com.sop.cacapp.Persistence.PoopOccurrencePersistent;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -137,13 +134,15 @@ public class RegisterActivity extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+                                    PoopOccurrencePersistent globalPoop = new PoopOccurrencePersistent();
+                                    globalPoop.CreateCalculatedData();
                                     Intent i = new Intent(RegisterActivity.this, MainActivity.class);
                                     startActivity(i);
                                     finish();
                                 }
                             });
                 } else {
-                    Toast.makeText(RegisterActivity.this, "Ya existe una cuenta asociada a este correo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Ya existe una cuenta asociada a este correo o: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
