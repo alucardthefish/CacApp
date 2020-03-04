@@ -1,5 +1,6 @@
 package com.sop.cacapp.Persistence;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -136,14 +137,60 @@ public class PoopOccurrencePersistent {
         Map<String, Object> data = new HashMap<>();
         data.put("deposition_counter", 0);
         data.put("last_deposition_date", "NoDate");
+        data.put("first_deposition_date", "NoDate");
+        data.put("deposition_mean_frequency", 0);
         mCollectedDataReference.set(data);
     }
 
-    public void UpdateCalculatedData(Timestamp last_date) {
+    public void UpdateCalculatedData(final Timestamp current_date) {
         mCollectedDataReference
-                .update(
-                        "deposition_counter", FieldValue.increment(1),
-                        "last_deposition_date", last_date);
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            int deposition_counter =  documentSnapshot.getDouble("deposition_counter").intValue();
+                            long diff = 0;
+                            if (documentSnapshot.get("last_deposition_date") instanceof String) {
+                                updateByDepositionCounter(deposition_counter,
+                                        diff,
+                                        current_date);
+                            } else {
+                                Timestamp last_date = documentSnapshot.getTimestamp("last_deposition_date");
+                                diff = current_date.toDate().getTime() - last_date.toDate().getTime();
+                                updateByDepositionCounter(deposition_counter,
+                                        diff,
+                                        current_date);
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void updateByDepositionCounter(int counter, long timeDiff, Timestamp current_date) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("deposition_counter", FieldValue.increment(1));
+        data.put("last_deposition_date", current_date);
+        if (counter > 0) {
+            double deposition_mean_frequency = timeDiff / (counter + 1.0);
+            data.put("deposition_mean_frequency", deposition_mean_frequency);
+        } else {
+            data.put("first_deposition_date", current_date);
+        }
+        mCollectedDataReference
+                .update(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("ByDepositionCounter", "Successfully updated");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("ByDepositionCounter", "Fail to update");
+                    }
+                });
     }
 
     public void GetCalculatedData(final MyCallback myCallback) {
