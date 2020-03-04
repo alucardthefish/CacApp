@@ -75,18 +75,18 @@ public class MainFragment extends Fragment {
             public void onClick(View v) {
                 Toast.makeText(view.getContext(), "Creando deposición", Toast.LENGTH_SHORT).show();
                 PoopOccurrencePersistent dbAccessor = new PoopOccurrencePersistent();
-                //dbAccessor.CreatePoopOccurrence(view);
-                dbAccessor.CreatePoopOccurrenceTwo(view, new PoopOccurrencePersistent.OnCreatePoopOccurrenceListener() {
+                dbAccessor.CreatePoopOccurrence(view);
+                /*dbAccessor.CreatePoopOccurrenceTwo(view, new PoopOccurrencePersistent.OnCreatePoopOccurrenceListener() {
                     @Override
                     public void onCallBack(Map<String, Object> data) {
                         Toast.makeText(view.getContext(), "Deposición guardada", Toast.LENGTH_SHORT).show();
                     }
-                });
+                });*/
             }
         });
     }
 
-    private void LoadReloader() {
+    private void loadReloader() {
         DocumentReference doc = new PoopOccurrencePersistent().getmCollectedDataReference();
         doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -101,10 +101,15 @@ public class MainFragment extends Fragment {
                     int dposCounter = documentSnapshot.getLong("deposition_counter").intValue();
                     tvDepositionCounter.setText(documentSnapshot.getData().get("deposition_counter").toString());
                     tvDayCounter.setText(""+daysElapsed);
-                    Timestamp last = documentSnapshot.getTimestamp("last_deposition_date");
-                    tvDepositionStatus.setText(getDateTime(last).toString());
-                    tvLastDeposition.setText(GetTimeDifference(last.toDate(), new Date()));
-                    tvAvgFrequency.setText(""+getDepositionFrequency(daysElapsed, dposCounter));
+                    if (documentSnapshot.get("last_deposition_date") instanceof String) {
+                        tvDepositionStatus.setText("Sin registros aun");
+                        tvLastDeposition.setText(documentSnapshot.getString("last_deposition_date"));
+                    } else {
+                        Timestamp last = documentSnapshot.getTimestamp("last_deposition_date");
+                        tvDepositionStatus.setText(getDateTime(last).toString());
+                        tvLastDeposition.setText(GetTimeDifference(last.toDate(), new Date()));
+                    }
+                    tvAvgFrequency.setText(Double.toString(getDepositionFrequency(daysElapsed, dposCounter)));
                 }
             }
         });
@@ -123,7 +128,7 @@ public class MainFragment extends Fragment {
                 daysElapsed = GetDaysDifference(registerDateTimestamp.toDate(), new Date());
                 tvDayCounter.setText(GetTimeDifference(registerDateTimestamp.toDate(), new Date()));
 
-                LoadReloader();
+                loadReloader();
             }
         });
 
@@ -133,7 +138,7 @@ public class MainFragment extends Fragment {
     public String getDateTime(Timestamp ts) {
         Date date = ts.toDate();
         String pattern = "dd MMMM yyyy hh:mm";
-        Locale current = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) ? getResources().getConfiguration().getLocales().get(0) : getResources().getConfiguration().locale;
+        Locale current = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) ? getContext().getResources().getConfiguration().getLocales().get(0) : getContext().getResources().getConfiguration().locale;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, current);
         return simpleDateFormat.format(date);
     }
@@ -172,9 +177,23 @@ public class MainFragment extends Fragment {
     public double getDepositionFrequency(int numOfDays, int numOfDepositions) {
         double res = 0;
         if (numOfDepositions > 0) {
-            res = numOfDays / numOfDepositions;
+            res = (double) numOfDays / numOfDepositions;
         }
         return res;
+    }
+
+    private String getTimeFormatFromDifference(long timeDifference) {
+        int diffDays = (int) (timeDifference / (24 * 60 * 60 * 1000));
+        int diffHours = (int) (timeDifference / (60 * 60 * 1000));
+        int diffMinutes = (int) (timeDifference / (60 * 1000));
+        int concreteDays = diffDays;
+        int concreteHours = diffHours - (concreteDays * 24);
+        int concreteMinutes = diffMinutes - ((concreteHours + (concreteDays * 24)) * 60);
+        String output = "";
+        output += (concreteDays > 0) ? String.format("%d dias ", concreteDays) : "";
+        output += (concreteHours > 0) ? String.format("%d horas ", concreteHours) : "";
+        output += String.format("%d minutos", concreteMinutes);
+        return output;
     }
 
 
