@@ -95,7 +95,7 @@
                 android:text=":" />
 
             <TextView
-                android:id="@+id/tvDepositionStatus"
+                android:id="@+id/tvLastDepositionDate"
                 android:layout_gravity="start" />
         </TableRow>
 
@@ -113,7 +113,7 @@
                 android:text=":" />
 
             <TextView
-                android:id="@+id/tvLastDeposition"
+                android:id="@+id/tvLastDepositionTimeElapsed"
                 android:layout_gravity="start" />
         </TableRow>
     </TableLayout>

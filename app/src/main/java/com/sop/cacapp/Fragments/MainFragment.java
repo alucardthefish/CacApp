@@ -39,8 +39,8 @@ public class MainFragment extends Fragment {
     private TextView tvDepositionCounter;
     private TextView tvDayCounter;
     private TextView tvAvgFrequency;
-    private TextView tvDepositionStatus;
-    private TextView tvLastDeposition;
+    private TextView tvLastDepositionDate;
+    private TextView tvLastDepositionTimeElapsed;
     private int daysElapsed;
     private Timestamp registerDateTimestamp;
 
@@ -59,8 +59,8 @@ public class MainFragment extends Fragment {
         tvDepositionCounter = view.findViewById(R.id.tvDepositionCounter);
         tvDayCounter = view.findViewById(R.id.tvDayCounter);
         tvAvgFrequency = view.findViewById(R.id.tvAvgFrequency);
-        tvDepositionStatus = view.findViewById(R.id.tvDepositionStatus);
-        tvLastDeposition = view.findViewById(R.id.tvLastDeposition);
+        tvLastDepositionDate = view.findViewById(R.id.tvLastDepositionDate);
+        tvLastDepositionTimeElapsed = view.findViewById(R.id.tvLastDepositionTimeElapsed);
 
         LoadData();
 
@@ -102,14 +102,16 @@ public class MainFragment extends Fragment {
                     tvDepositionCounter.setText(documentSnapshot.getData().get("deposition_counter").toString());
                     tvDayCounter.setText(""+daysElapsed);
                     if (documentSnapshot.get("last_deposition_date") instanceof String) {
-                        tvDepositionStatus.setText("Sin registros aun");
-                        tvLastDeposition.setText(documentSnapshot.getString("last_deposition_date"));
+                        tvLastDepositionDate.setText("Sin registros aun");
+                        tvLastDepositionTimeElapsed.setText(documentSnapshot.getString("last_deposition_date"));
                     } else {
                         Timestamp last = documentSnapshot.getTimestamp("last_deposition_date");
-                        tvDepositionStatus.setText(getDateTime(last).toString());
-                        tvLastDeposition.setText(GetTimeDifference(last.toDate(), new Date()));
+                        tvLastDepositionDate.setText(getDateTime(last).toString());
+                        tvLastDepositionTimeElapsed.setText(GetTimeDifference(last.toDate(), new Date()));
                     }
-                    tvAvgFrequency.setText(Double.toString(getDepositionFrequency(daysElapsed, dposCounter)));
+                    long timeFrequency = documentSnapshot.getLong("deposition_mean_frequency");
+                    tvAvgFrequency.setText(getTimeFormatFromDifference(timeFrequency));
+                    //tvAvgFrequency.setText(Double.toString(getDepositionFrequency(daysElapsed, dposCounter)));
                 }
             }
         });
