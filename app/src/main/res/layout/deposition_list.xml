@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+        
+        <ImageView
+            android:id="@+id/ivDepositionIcon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@mipmap/ic_launcher"></ImageView>
+        
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Febrero 22 de 2020"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/ivDepositionIcon"
+            android:layout_toEndOf="@id/ivDepositionIcon"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="05:33 PM"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_below="@id/tvDate"
+            android:layout_toRightOf="@id/ivDepositionIcon"
+            android:layout_toEndOf="@id/ivDepositionIcon"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"/>
+        
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
