@@ -139,12 +139,15 @@ public class MainFragment extends Fragment {
         dbProfile.GetProfile(new ProfilePersistent.MyCallback() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
-            public void onCallBack(Profile profile) {
-                registerDateTimestamp = profile.getRegisterDate();
-                tvRegisterDate.setText(getDateTime(registerDateTimestamp));
-                daysElapsed = GetDaysDifference(registerDateTimestamp.toDate(), new Date());
-                tvDayCounter.setText(GetTimeDifference(registerDateTimestamp.toDate(), new Date()));
-
+            public void onCallBack(boolean isSuccess, Profile profile) {
+                if (isSuccess) {
+                    registerDateTimestamp = profile.getRegisterDate();
+                    tvRegisterDate.setText(getDateTime(registerDateTimestamp));
+                    daysElapsed = GetDaysDifference(registerDateTimestamp.toDate(), new Date());
+                    tvDayCounter.setText(GetTimeDifference(registerDateTimestamp.toDate(), new Date()));
+                } else {
+                    Toast.makeText(getContext(), "No se pudo cargar algunos datos", Toast.LENGTH_SHORT).show();
+                }
                 loadReloader();
             }
         });
@@ -165,9 +168,6 @@ public class MainFragment extends Fragment {
         String unidad = "dia(s)";
         long diff = d2.getTime() - d1.getTime();
         long diffDays = diff / (24 * 60 * 60 * 1000);
-        Log.d("DiffTime-date1", Long.toString(d1.getTime()));
-        Log.d("DiffTime-date2", Long.toString(d2.getTime()));
-        Log.d("DiffTime", Long.toString(diffDays));
         if (diffDays < 1) {
             // Set to hours
             unidad = "hora(s)";
