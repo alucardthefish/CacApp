@@ -44,6 +44,23 @@
             android:layout_toEndOf="@id/ivDepositionIcon"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"/>
+
+        <RatingBar
+            android:id="@+id/rbStars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvTime"
+            android:layout_toRightOf="@id/ivDepositionIcon"
+            android:layout_toEndOf="@id/ivDepositionIcon"
+            android:transformPivotX="0dp"
+            android:transformPivotY="0dp"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:numStars="5"
+            android:rating="3"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:isIndicator="true" />
         
     </RelativeLayout>
 
