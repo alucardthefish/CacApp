@@ -1,6 +1,8 @@
 package com.sop.cacapp.Persistence;
 
+import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,18 +35,45 @@ public class ProfilePersistent {
         return profileReference.set(profile);
     }
 
+    public void createProfile(Profile profile, final OnCreateProfileListener listener) {
+        profileReference
+                .set(profile)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        listener.onCallBack(true);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onCallBack(false);
+                    }
+                });
+    }
+
     public void GetProfile(final MyCallback myCallback) {
         profileReference.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         Profile profile = documentSnapshot.toObject(Profile.class);
-                        myCallback.onCallBack(profile);
+                        myCallback.onCallBack(true, profile);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        myCallback.onCallBack(false, null);
                     }
                 });
     }
 
     public interface MyCallback {
-        void onCallBack(Profile profile);
+        void onCallBack(boolean isSuccess, Profile profile);
+    }
+
+    public interface OnCreateProfileListener {
+        void onCallBack(boolean isSuccess);
     }
 }
