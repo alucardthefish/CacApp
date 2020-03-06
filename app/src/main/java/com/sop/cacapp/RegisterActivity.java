@@ -13,7 +13,6 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +21,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sop.cacapp.Object.Profile;
 import com.sop.cacapp.Persistence.PoopOccurrencePersistent;
+import com.sop.cacapp.Persistence.ProfilePersistent;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -100,9 +100,9 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(RegisterActivity.this, "Registrado exitosamente!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivity.this, "Registrando...", Toast.LENGTH_LONG).show();
 
-                    Profile profile = new Profile(name,
+                    final Profile profile = new Profile(name,
                             email,
                             age,
                             height,
@@ -118,31 +118,35 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(RegisterActivity.this, "Perfil creado", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Perfil actualizado", Toast.LENGTH_SHORT).show();
+                                createUserProfile(profile);
                             } else {
-                                Toast.makeText(RegisterActivity.this, "Perfil no se pudo crear", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Perfil no se pudo crear y actualizar", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
-                    String id = user.getUid();
-                    //Todo Move the code below to a persistent class that handle database operations and doit inside profileUpdater callback
-                    mDataBase.collection("users")
-                            .document(id)
-                            .collection("data")
-                            .document("profile")
-                            .set(profile)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    PoopOccurrencePersistent globalPoop = new PoopOccurrencePersistent();
-                                    globalPoop.CreateCalculatedData();
-                                    Intent i = new Intent(RegisterActivity.this, MainActivity.class);
-                                    startActivity(i);
-                                    finish();
-                                }
-                            });
+
                 } else {
                     Toast.makeText(RegisterActivity.this, "Ya existe una cuenta asociada a este correo o: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void createUserProfile(Profile profile) {
+        ProfilePersistent profilePersistent = new ProfilePersistent();
+        profilePersistent.createProfile(profile, new ProfilePersistent.OnCreateProfileListener() {
+            @Override
+            public void onCallBack(boolean isSuccess) {
+                if (isSuccess) {
+                    Toast.makeText(RegisterActivity.this, "Perfil de usuario creado!", Toast.LENGTH_SHORT).show();
+                    PoopOccurrencePersistent globalPoop = new PoopOccurrencePersistent();
+                    globalPoop.CreateCalculatedData();
+                    Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+                    startActivity(i);
+                    finish();
+                } else {
+                    Toast.makeText(RegisterActivity.this, "No se pudo crear el perfil", Toast.LENGTH_SHORT).show();
                 }
             }
         });
