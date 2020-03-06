@@ -125,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
                     String id = user.getUid();
-
+                    //Todo Move the code below to a persistent class that handle database operations and doit inside profileUpdater callback
                     mDataBase.collection("users")
                             .document(id)
                             .collection("data")
