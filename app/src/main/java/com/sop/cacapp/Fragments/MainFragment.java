@@ -1,5 +1,8 @@
 package com.sop.cacapp.Fragments;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +48,8 @@ public class MainFragment extends Fragment {
     private int daysElapsed;
     private Timestamp registerDateTimestamp;
 
+    private Dialog mDialog;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +68,8 @@ public class MainFragment extends Fragment {
         tvLastDepositionDate = view.findViewById(R.id.tvLastDepositionDate);
         tvLastDepositionTimeElapsed = view.findViewById(R.id.tvLastDepositionTimeElapsed);
 
+        mDialog = new Dialog(view.getContext());
+
         LoadData();
 
         InitListeners();
@@ -74,8 +82,10 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(view.getContext(), "Creando deposición", Toast.LENGTH_SHORT).show();
-                PoopOccurrencePersistent dbAccessor = new PoopOccurrencePersistent();
-                dbAccessor.CreatePoopOccurrence(view);
+                //PoopOccurrencePersistent dbAccessor = new PoopOccurrencePersistent();
+                //dbAccessor.CreatePoopOccurrence(view);
+                showDialog();
+
                 /*dbAccessor.CreatePoopOccurrenceTwo(view, new PoopOccurrencePersistent.OnCreatePoopOccurrenceListener() {
                     @Override
                     public void onCallBack(Map<String, Object> data) {
@@ -106,7 +116,12 @@ public class MainFragment extends Fragment {
                         tvLastDepositionTimeElapsed.setText(documentSnapshot.getString("last_deposition_date"));
                     } else {
                         Timestamp last = documentSnapshot.getTimestamp("last_deposition_date");
-                        tvLastDepositionDate.setText(getDateTime(last).toString());
+                        if (getContext() != null) {
+                            tvLastDepositionDate.setText(getDateTime(last));
+                        } else {
+                            tvLastDepositionDate.setText("No cargó");
+                        }
+                        //tvLastDepositionDate.setText(getDateTime(last));
                         tvLastDepositionTimeElapsed.setText(GetTimeDifference(last.toDate(), new Date()));
                     }
                     long timeFrequency = documentSnapshot.getLong("deposition_mean_frequency");
@@ -139,8 +154,8 @@ public class MainFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public String getDateTime(Timestamp ts) {
         Date date = ts.toDate();
-        String pattern = "dd MMMM yyyy hh:mm";
-        Locale current = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) ? getContext().getResources().getConfiguration().getLocales().get(0) : getContext().getResources().getConfiguration().locale;
+        String pattern = "dd MMMM yyyy hh:mm aa";
+        Locale current = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) ? this.getContext().getResources().getConfiguration().getLocales().get(0) : this.getContext().getResources().getConfiguration().locale;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, current);
         return simpleDateFormat.format(date);
     }
@@ -196,6 +211,40 @@ public class MainFragment extends Fragment {
         output += (concreteHours > 0) ? String.format("%d horas ", concreteHours) : "";
         output += String.format("%d minutos", concreteMinutes);
         return output;
+    }
+
+    private void showDialog() {
+        final RatingBar ratingBarDepositionSatisfaction;
+        Button btnAccept;
+        Button btnCancel;
+
+        mDialog.setContentView(R.layout.dialog_pre_deposition);
+        ratingBarDepositionSatisfaction = mDialog.findViewById(R.id.ratingBarDepositionSatisfaction);
+        btnAccept = mDialog.findViewById(R.id.btnAccept);
+        btnCancel = mDialog.findViewById(R.id.btnCancel);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Dialog", "Dialog was canceled");
+                mDialog.dismiss();
+            }
+        });
+
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float satisfaction = ratingBarDepositionSatisfaction.getRating();
+                PoopOccurrencePersistent dbAccessor = new PoopOccurrencePersistent();
+                dbAccessor.CreatePoopOccurrence(view, satisfaction);
+                mDialog.dismiss();
+                Log.d("Dialog", "Dialog accepted with a satisfaction of: " + satisfaction);
+            }
+        });
+
+        mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        mDialog.show();
+
     }
 
 
