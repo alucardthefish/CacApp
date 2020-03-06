@@ -18,7 +18,7 @@
             android:id="@+id/ivDepositionIcon"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@mipmap/ic_launcher"></ImageView>
+            android:src="@drawable/shit3"></ImageView>
         
         <TextView
             android:id="@+id/tvDate"
