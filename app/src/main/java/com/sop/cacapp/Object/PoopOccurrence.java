@@ -7,17 +7,21 @@ import java.util.Date;
 
 public class PoopOccurrence {
 
-    private String status;
+    private float satisfaction;
     private Timestamp occurrenceTime;
 
     public PoopOccurrence() {
-        this.status = "nuevo";
+        this.occurrenceTime = new Timestamp(new Date());
+    }
+
+    public PoopOccurrence(float satisfaction) {
+        this.satisfaction = satisfaction;
         //this.occurrenceDateTime = LocalDateTime.now();
         this.occurrenceTime = new Timestamp(new Date());
     }
 
-    public String getStatus() {
-        return status;
+    public float getSatisfaction() {
+        return satisfaction;
     }
 
     public Timestamp getOccurrenceTime() {

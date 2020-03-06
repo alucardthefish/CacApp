@@ -74,8 +74,8 @@ public class PoopOccurrencePersistent {
         this.status = stat;
     }
 
-    public void CreatePoopOccurrence(final View view) {
-        final PoopOccurrence depositionDateTime = new PoopOccurrence();
+    public void CreatePoopOccurrence(final View view, float satisfaction) {
+        final PoopOccurrence depositionDateTime = new PoopOccurrence(satisfaction);
         mReference.add(depositionDateTime)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override

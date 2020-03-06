@@ -29,7 +29,6 @@ public class PoopOccurrenceAdapter extends RecyclerView.Adapter<PoopOccurrenceAd
     private View.OnClickListener listener;
 
     public PoopOccurrenceAdapter(Context context, ArrayList<PoopOccurrence> model) {
-        // TODO problem here, null reference of context when in mainFragment create new deposition or is updated externally
         this.inflater = LayoutInflater.from(context);
         this.model = model;
         this.mContext = context;
@@ -50,10 +49,11 @@ public class PoopOccurrenceAdapter extends RecyclerView.Adapter<PoopOccurrenceAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Timestamp poopOccurrenceDateTime = model.get(position).getOccurrenceTime();
-        String poopOccurrenceStatus = model.get(position).getStatus();
+        // TODO add the satisfaction in a ratingBar and set icon according to that value
+        float poopOccurrenceSatisfaction = model.get(position).getSatisfaction();
         Date date = poopOccurrenceDateTime.toDate();
         String patternOne = "dd MMMM yyyy";
-        String patternTwo = "hh:mm";
+        String patternTwo = "hh:mm aa";
         Locale current = mContext.getResources().getConfiguration().locale;
         holder.tvDate.setText(new SimpleDateFormat(patternOne, current).format(date));
         holder.tvTime.setText(new SimpleDateFormat(patternTwo, current).format(date));
