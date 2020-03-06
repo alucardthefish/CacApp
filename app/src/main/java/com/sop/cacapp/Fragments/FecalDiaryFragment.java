@@ -16,6 +16,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sop.cacapp.Adapters.PoopOccurrenceAdapter;
 import com.sop.cacapp.Object.PoopOccurrence;
@@ -58,6 +59,7 @@ public class FecalDiaryFragment extends Fragment {
     public void loadList() {
         CollectionReference poopOccurrencesReference = new PoopOccurrencePersistent().getmReference();
         poopOccurrencesReference
+                .orderBy("occurrenceTime", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -72,7 +74,9 @@ public class FecalDiaryFragment extends Fragment {
                                 poopOccurrenceArrayList.add(poopOccurrence);
                             }
                             // Show data
-                            showData();
+                            if (getContext() != null) {
+                                showData();
+                            }
                         }
                     }
                 });
