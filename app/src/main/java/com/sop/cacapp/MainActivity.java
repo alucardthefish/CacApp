@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sop.cacapp.Fragments.FecalDiaryFragment;
 import com.sop.cacapp.Fragments.MainFragment;
+import com.sop.cacapp.Fragments.PoopStatisticsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -110,6 +111,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.diary:
                         fragmentTransaction.replace(R.id.container, new FecalDiaryFragment());
+                        break;
+                    case R.id.depositionStatistics:
+                        fragmentTransaction.replace(R.id.container, new PoopStatisticsFragment());
                         break;
                     case R.id.signOut:
                         mAuth.signOut();

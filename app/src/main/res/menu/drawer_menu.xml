@@ -15,7 +15,7 @@
 
         </item>
         <item
-            android:id="@+id/statistics"
+            android:id="@+id/depositionStatistics"
             android:icon="@drawable/ic_show_chart_black"
             android:title="Estadisticas">
 
