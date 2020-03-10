@@ -18,9 +18,17 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.sop.cacapp.Object.PoopOccurrence;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 public class PoopOccurrencePersistent {
@@ -213,5 +221,48 @@ public class PoopOccurrencePersistent {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public void getMyPoopData(final PoopDataCallback callback) {
+        mReference
+                .orderBy("occurrenceTime", Query.Direction.ASCENDING)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            ArrayList<Date> depositionDates = new ArrayList<>();
+                            for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
+                                //depositionDates.add(ds.getTimestamp("occurrenceTime").toDate());
+                                depositionDates.add(ds.getDate("occurrenceTime"));
+                            }
+                            Dictionary lineChartDataDict = extractChartData(depositionDates);
+                            callback.onCallback(lineChartDataDict);
+                        }
+                    }
+                });
+    }
+
+    private Dictionary extractChartData(ArrayList<Date> depositionDates) {
+        Dictionary mDictDates = new Hashtable();
+        for (Date d : depositionDates) {
+            int month = d.getMonth() + 1;
+            int year = d.getYear() + 1900;
+            ArrayList<Integer> yearAndMonth = new ArrayList<>();
+            yearAndMonth.add(year);
+            yearAndMonth.add(month);
+            //int key = year + month;
+            Log.d("extract", "month: " + month + " - year: " + year);
+            if (mDictDates.get(yearAndMonth) != null) {
+                mDictDates.put(yearAndMonth, (int) mDictDates.get(yearAndMonth) + 1);
+            } else {
+                mDictDates.put(yearAndMonth, 1);
+            }
+        }
+        return mDictDates;
+    }
+
+    public interface PoopDataCallback {
+        void onCallback(Dictionary dic);
     }
 }
