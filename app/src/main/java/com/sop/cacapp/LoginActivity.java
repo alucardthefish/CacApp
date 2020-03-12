@@ -85,6 +85,8 @@ public class LoginActivity extends AppCompatActivity {
                     finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "Hubo un error", Toast.LENGTH_LONG).show();
+                    Log.d("LoginUser", task.getException().getMessage());
+                    activateProgressBar(false);
                 }
             }
         });

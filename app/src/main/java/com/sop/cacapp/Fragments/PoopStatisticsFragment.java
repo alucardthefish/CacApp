@@ -468,7 +468,7 @@ public class PoopStatisticsFragment extends Fragment {
                 ret = monthStr;
             }
             else {
-                ret = Integer.toString(dayOfMonth);
+                //ret = Integer.toString(dayOfMonth);
             }
 
             lastMonth = month;
