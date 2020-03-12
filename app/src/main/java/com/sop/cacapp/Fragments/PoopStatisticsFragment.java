@@ -35,6 +35,7 @@ import com.sop.cacapp.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -190,38 +191,22 @@ public class PoopStatisticsFragment extends Fragment {
         PoopOccurrencePersistent poopPersistence = new PoopOccurrencePersistent();
         poopPersistence.getMyPoopData(new PoopOccurrencePersistent.PoopDataCallback() {
             @Override
-            public void onCallback(Dictionary dic) {
+            public void onCallback(ArrayList allData) {
+                Dictionary dic = (Dictionary) allData.get(0);
+                ArrayList arrKeys = (ArrayList) allData.get(1);
                 if (!dic.isEmpty()) {
                     lineChart.refreshDrawableState();
                     lineChart.getXAxis().setDrawGridLines(false);
-                    /*lineChart.getXAxis().setValueFormatter(new ValueFormatter() {
-                        @Override
-                        public String getFormattedValue(float value) {
-                            long date = (long) value;
-                            date = date * (24*60*60*1000);
-                            Date d = new Date(date);
-                            String patternOne = "MMMM yyyy";
-                            //Locale current = mContext.getResources().getConfiguration().locale;
-                            Locale current = getContext().getResources().getConfiguration().locale;
-                            //new SimpleDateFormat(patternOne, current).format(date));
-                            return new SimpleDateFormat(patternOne, current).format(d);
-                        }
-                    });*/
-                    List<Entry> entries = new ArrayList<>();
-                    int num = 1;
-                    for (Enumeration k = dic.keys(); k.hasMoreElements();) {
-                        ArrayList<Integer> key = (ArrayList<Integer>) k.nextElement();
-                        int year = key.get(0);
-                        int month = key.get(1);
 
-                        int counter = (int) dic.get(key);
-                        Log.d("LineChart", "key: " + key + " - data: " + counter + " - value: " + num);
-                        //Log.d("LineChart", "key: " + key + " - data: " + counter);
-                        entries.add(new Entry(num, counter));
-                        //entries.add(new Entry(key, counter));
-                        num++;
+                    lineChart.getXAxis().setValueFormatter(new DateAxisValueFormatter(lineChart, sticky));
+                    List<Entry> entries = new ArrayList<>();
+
+                    for (int i = 0; i < arrKeys.size(); i++) {
+                        int counter = (int) dic.get(arrKeys.get(i));
+                        entries.add(new Entry(i, counter));
                     }
-                    LineDataSet dataSet = new LineDataSet(entries, "Label");    // Add entries to dataset
+
+                    LineDataSet dataSet = new LineDataSet(entries, "Frequencia");    // Add entries to dataset
                     dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
                     dataSet.setDrawFilled(true);
                     dataSet.setDrawValues(false);
@@ -402,6 +387,82 @@ public class PoopStatisticsFragment extends Fragment {
             }
 
             String ret;
+
+            if( (month > lastMonth || year > lastYear) && !isFirstValue ) {
+                ret = monthStr;
+            }
+            else {
+                ret = Integer.toString(dayOfMonth);
+            }
+
+            lastMonth = month;
+            lastYear = year;
+            lastFormattedValue = value;
+
+            return ret;
+        }
+    }
+
+    public class DateAxisValueFormatter extends ValueFormatter {
+        private Calendar c;
+        private LineChart chart;
+        private TextView sticky;
+        private float lastFormattedValue = 1e9f;
+        private int lastMonth = 0;
+        private int lastYear = 0;
+        private int stickyMonth = -1;
+        private int stickyYear = -1;
+        private SimpleDateFormat monthFormatter = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+
+        private Date initialDate;
+
+        DateAxisValueFormatter(LineChart chart, TextView sticky) {
+            c = new GregorianCalendar();
+            this.chart = chart;
+            this.sticky = sticky;
+        }
+
+        @Override
+        public String getFormattedValue(float value) {
+            if (value < chart.getLowestVisibleX()) {
+                return "";
+            }
+
+            int months = (int) value;
+            boolean isFirstValue = value < lastFormattedValue;
+
+            if (isFirstValue) {
+                lastMonth = 50;
+                lastYear = 5000;
+
+                c.set(2020, 2, 1);
+                c.add(Calendar.MONTH, (int) chart.getLowestVisibleX());
+
+                stickyMonth = c.get(Calendar.MONTH);
+                stickyYear = c.get(Calendar.YEAR);
+
+                String stickyText = monthFormatter.format(c.getTime()) + "\n" + stickyYear;
+                sticky.setText(stickyText);
+            }
+
+            c.set(2020, 2, 1);
+            c.add(Calendar.MONTH, months);
+            Date d = c.getTime();
+
+            int dayOfMonth = c.get(Calendar.DAY_OF_MONTH);
+            int month = c.get(Calendar.MONTH);
+            int year = c.get(Calendar.YEAR);
+
+            String monthStr = monthFormatter.format(d);
+
+            if( (month > stickyMonth || year > stickyYear) && isFirstValue ) {
+                stickyMonth = month;
+                stickyYear = year;
+                String stickyText = monthStr + "\n" + year;
+                sticky.setText(stickyText);
+            }
+
+            String ret = "";
 
             if( (month > lastMonth || year > lastYear) && !isFirstValue ) {
                 ret = monthStr;
