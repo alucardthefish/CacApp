@@ -153,8 +153,8 @@ public class PoopOccurrencePersistent {
                                         diff,
                                         current_date);
                             } else {
-                                Timestamp last_date = documentSnapshot.getTimestamp("last_deposition_date");
-                                diff = current_date.toDate().getTime() - last_date.toDate().getTime();
+                                Timestamp first_date = documentSnapshot.getTimestamp("first_deposition_date");
+                                diff = current_date.toDate().getTime() - first_date.toDate().getTime();
                                 updateByDepositionCounter(deposition_counter,
                                         diff,
                                         current_date);
@@ -169,7 +169,7 @@ public class PoopOccurrencePersistent {
         data.put("deposition_counter", FieldValue.increment(1));
         data.put("last_deposition_date", current_date);
         if (counter > 0) {
-            double deposition_mean_frequency = timeDiff / (counter + 1.0);
+            double deposition_mean_frequency = timeDiff / (counter);
             data.put("deposition_mean_frequency", deposition_mean_frequency);
         } else {
             data.put("first_deposition_date", current_date);
