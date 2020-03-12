@@ -22,8 +22,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sop.cacapp.Object.PoopOccurrence;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
@@ -43,9 +41,6 @@ public class PoopOccurrencePersistent {
     public PoopOccurrencePersistent() {
         this.status = false;
         this.mAuth = FirebaseAuth.getInstance();
-        //FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-        //        .setTimestampsInSnapshotsEnabled(true)
-        //        .build();
         this.currentUser = mAuth.getCurrentUser();
 
         this.mDataBase = FirebaseFirestore.getInstance();
@@ -62,12 +57,6 @@ public class PoopOccurrencePersistent {
                 .document("cacap")
                 .collection("interpreted_data")
                 .document("global");
-
-        // Old:
-        //java.util.Date date = snapshot.getDate("created_at");
-        // New:
-        //Timestamp timestamp = snapshot.getTimestamp("created_at");
-        //java.util.Date date = timestamp.toDate();
     }
 
     public DocumentReference getmCollectedDataReference() {
@@ -236,33 +225,34 @@ public class PoopOccurrencePersistent {
                                 //depositionDates.add(ds.getTimestamp("occurrenceTime").toDate());
                                 depositionDates.add(ds.getDate("occurrenceTime"));
                             }
-                            Dictionary lineChartDataDict = extractChartData(depositionDates);
+                            ArrayList lineChartDataDict = extractChartData(depositionDates);
                             callback.onCallback(lineChartDataDict);
                         }
                     }
                 });
     }
 
-    private Dictionary extractChartData(ArrayList<Date> depositionDates) {
+    private ArrayList extractChartData(ArrayList<Date> depositionDates) {
         Dictionary mDictDates = new Hashtable();
+        ArrayList<Integer> arrayOfKeys = new ArrayList<>();
         for (Date d : depositionDates) {
             int month = d.getMonth() + 1;
             int year = d.getYear() + 1900;
-            ArrayList<Integer> yearAndMonth = new ArrayList<>();
-            yearAndMonth.add(year);
-            yearAndMonth.add(month);
-            //int key = year + month;
-            Log.d("extract", "month: " + month + " - year: " + year);
-            if (mDictDates.get(yearAndMonth) != null) {
-                mDictDates.put(yearAndMonth, (int) mDictDates.get(yearAndMonth) + 1);
+            int key = year + month;
+            if (mDictDates.get(key) != null) {
+                mDictDates.put(key, (int) mDictDates.get(key) + 1);
             } else {
-                mDictDates.put(yearAndMonth, 1);
+                mDictDates.put(key, 1);
+                arrayOfKeys.add(key);
             }
         }
-        return mDictDates;
+        ArrayList retArray = new ArrayList();
+        retArray.add(mDictDates);
+        retArray.add(arrayOfKeys);
+        return retArray;
     }
 
     public interface PoopDataCallback {
-        void onCallback(Dictionary dic);
+        void onCallback(ArrayList allData);
     }
 }
