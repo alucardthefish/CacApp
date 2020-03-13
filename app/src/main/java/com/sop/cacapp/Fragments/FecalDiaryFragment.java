@@ -50,7 +50,11 @@ public class FecalDiaryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fecal_diary, container, false);
         recyclerViewPoopOccurrence = view.findViewById(R.id.recyclerViewDiary);
+        recyclerViewPoopOccurrence.setLayoutManager(new LinearLayoutManager(getContext()));
         poopOccurrenceArrayList = new ArrayList<>();
+
+        poopOccurrenceAdapter = new PoopOccurrenceAdapter(getContext(), poopOccurrenceArrayList);
+        recyclerViewPoopOccurrence.setAdapter(poopOccurrenceAdapter);
         // Load list
         loadList();
         return view;

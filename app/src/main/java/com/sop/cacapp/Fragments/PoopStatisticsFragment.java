@@ -441,7 +441,7 @@ public class PoopStatisticsFragment extends Fragment {
                 stickyMonth = c.get(Calendar.MONTH);
                 stickyYear = c.get(Calendar.YEAR);
 
-                String stickyText = monthFormatter.format(c.getTime()) + "\n" + stickyYear;
+                String stickyText = monthFormatter.format(c.getTime());// + "\n" + stickyYear;
                 sticky.setText(stickyText);
             }
 
@@ -458,7 +458,7 @@ public class PoopStatisticsFragment extends Fragment {
             if( (month > stickyMonth || year > stickyYear) && isFirstValue ) {
                 stickyMonth = month;
                 stickyYear = year;
-                String stickyText = monthStr + "\n" + year;
+                String stickyText = monthStr;// + "\n" + year;
                 sticky.setText(stickyText);
             }
 
