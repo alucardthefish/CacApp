@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sop.cacapp.Object.PoopOccurrence;
+import com.sop.cacapp.R;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -254,5 +255,50 @@ public class PoopOccurrencePersistent {
 
     public interface PoopDataCallback {
         void onCallback(ArrayList allData);
+    }
+
+    public void getMyPoopSatisfactionData(final PoopSatisfactionDataCallback callback) {
+        mReference
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            ArrayList<Double> satisfactionValues = new ArrayList<>();
+                            for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
+                                satisfactionValues.add(ds.getDouble("satisfaction"));
+                            }
+                            Map<Double, Integer> satisfactionData = extractSatisfactionData(satisfactionValues);
+                            callback.onCallback(satisfactionData);
+                        }
+                    }
+                });
+    }
+
+    private Map<Double, Integer> extractSatisfactionData(ArrayList<Double> satisfactions) {
+        Map<Double, Integer> data = new HashMap<Double, Integer>() {
+            {
+                put(1.0, 0);
+                put(2.0, 0);
+                put(3.0, 0);
+                put(4.0, 0);
+                put(5.0, 0);
+            }
+        };
+
+        for (double satisfaction : satisfactions) {
+            if (data.containsKey(satisfaction)) {
+                data.put(satisfaction, data.get(satisfaction) + 1);
+            } else {
+                double key = satisfaction + 0.5;
+                data.put(key, data.get(key) + 1);
+            }
+        }
+
+        return data;
+    }
+
+    public interface PoopSatisfactionDataCallback {
+        void onCallback(Map<Double, Integer> satisfactionData);
     }
 }

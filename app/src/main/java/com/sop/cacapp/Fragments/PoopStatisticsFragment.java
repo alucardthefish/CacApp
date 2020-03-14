@@ -1,6 +1,7 @@
 package com.sop.cacapp.Fragments;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -278,6 +279,33 @@ public class PoopStatisticsFragment extends Fragment {
     }
 
     private void loadDataPieChart() {
+        final String[] nameLabels = {"None", "Malo", "Regular", "Normal", "Bueno", "Excelente"};
+        PoopOccurrencePersistent poopPersistence = new PoopOccurrencePersistent();
+        poopPersistence.getMyPoopSatisfactionData(new PoopOccurrencePersistent.PoopSatisfactionDataCallback() {
+            @Override
+            public void onCallback(Map<Double, Integer> satisfactionData) {
+                ArrayList<PieEntry> pieEntries = new ArrayList<>();
+                for (Map.Entry<Double, Integer> entry : satisfactionData.entrySet()) {
+                    int value = entry.getValue();
+                    if (value > 0) {
+                        pieEntries.add(new PieEntry(value, nameLabels[entry.getKey().intValue()]));
+                    }
+                }
+                Description description = new Description();
+                description.setText("Gráfico de pastel fácil");
+                pieChart.setDescription(description);
+
+                PieDataSet dataSet = new PieDataSet(pieEntries, "");
+                dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                PieData pieData = new PieData(dataSet);
+
+                pieChart.setData(pieData);
+                pieChart.invalidate();
+            }
+        });
+    }
+
+    private void loadDataPieChart2() {
         Description description = new Description();
         description.setText("Gráfico de pastel fácil");
         pieChart.setDescription(description);
