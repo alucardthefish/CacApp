@@ -19,7 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sop.cacapp.Adapters.PoopOccurrenceAdapter;
-import com.sop.cacapp.Object.PoopOccurrence;
+import com.sop.cacapp.Classes.PoopOccurrence;
 import com.sop.cacapp.Persistence.PoopOccurrencePersistent;
 import com.sop.cacapp.R;
 

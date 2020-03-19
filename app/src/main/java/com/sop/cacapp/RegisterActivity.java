@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.sop.cacapp.Object.Profile;
+import com.sop.cacapp.Classes.Profile;
 import com.sop.cacapp.Persistence.PoopOccurrencePersistent;
 import com.sop.cacapp.Persistence.ProfilePersistent;
 

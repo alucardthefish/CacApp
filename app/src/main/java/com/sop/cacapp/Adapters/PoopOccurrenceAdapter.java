@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.Timestamp;
-import com.sop.cacapp.Object.PoopOccurrence;
+import com.sop.cacapp.Classes.PoopOccurrence;
 import com.sop.cacapp.R;
 
 import java.text.SimpleDateFormat;

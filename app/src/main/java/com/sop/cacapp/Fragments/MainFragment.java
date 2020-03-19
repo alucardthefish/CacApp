@@ -24,7 +24,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.sop.cacapp.Object.Profile;
+import com.sop.cacapp.Classes.Profile;
 import com.sop.cacapp.Persistence.PoopOccurrencePersistent;
 import com.sop.cacapp.Persistence.ProfilePersistent;
 import com.sop.cacapp.R;
@@ -32,7 +32,6 @@ import com.sop.cacapp.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
 
 public class MainFragment extends Fragment {
