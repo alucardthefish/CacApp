@@ -2,4 +2,19 @@
     <string name="app_name">CacApp</string>
     <string name="open">open</string>
     <string name="close">close</string>
+
+    <string name="singular_year">año</string>
+    <string name="singular_month">mes</string>
+    <string name="singular_week">semana</string>
+    <string name="singular_day">día</string>
+    <string name="singular_hour">hora</string>
+    <string name="singular_minute">minuto</string>
+    <string name="singular_second">segudo</string>
+    <string name="plural_year">años</string>
+    <string name="plural_month">meses</string>
+    <string name="plural_week">semanas</string>
+    <string name="plural_day">días</string>
+    <string name="plural_hour">horas</string>
+    <string name="plural_minute">minutos</string>
+    <string name="plural_second">segudos</string>
 </resources>
