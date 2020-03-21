@@ -1,8 +1,10 @@
 package com.sop.cacapp.Classes;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.google.firebase.Timestamp;
+import com.sop.cacapp.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,6 +28,12 @@ public class OccurrenceDateTimeHandler {
         this.currentLocale = context.getResources().getConfiguration().locale;
     }
 
+    public OccurrenceDateTimeHandler(Context context) {
+        this.context = context;
+        this.occurrenceDate = new Date();
+        this.currentLocale = context.getResources().getConfiguration().locale;
+    }
+
 
     public String getFormattedOccurrenceDateTime(String pattern) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, this.currentLocale);
@@ -37,7 +45,7 @@ public class OccurrenceDateTimeHandler {
         return getFormattedOccurrenceDateTime(pattern);
     }
 
-    public long getTimeDifferenceRespectDate(Date date) {
+    public long getTimeDifferenceRespectToDate(Date date) {
         long timeDifference = this.occurrenceDate.getTime() - date.getTime();
         if (timeDifference < 0) {
             timeDifference *= -1;
@@ -45,7 +53,20 @@ public class OccurrenceDateTimeHandler {
         return timeDifference;
     }
 
-    public String getTimeElapsed(long time) {
+    public int getTimeElapsedInDaysToDate(Date date) {
+        return (int) (getTimeDifferenceRespectToDate(date) / TimeUnits.DAY.getMillis());
+    }
+
+    public String getTimeElapsedByDate(Date date) {
+        long time = getTimeDifferenceRespectToDate(date);
+        return getTimeElapsedByDiffTime(time);
+    }
+
+    public String getTimeElapsed() {
+        return getTimeElapsedByDate(new Date());
+    }
+
+    public String getTimeElapsedByDiffTime(long time) {
         int units = 0;
         int diffInYears = (int) (time / TimeUnits.YEAR.getMillis());
         int diffInMonths = (int) (time / TimeUnits.MONTH.getMillis());
@@ -62,24 +83,36 @@ public class OccurrenceDateTimeHandler {
 
         String output = "";
 
+        Resources resources = context.getResources();
+
         if (diffInYears > 0 && units < 2) {
-            output += String.format(this.currentLocale, "%d ano(s) ", diffInYears);
+            String strUnitYear = (diffInYears > 1) ? resources.getString(R.string.plural_year) : resources.getString(R.string.singular_year);
+            output += String.format(this.currentLocale, "%d %s ", diffInYears, strUnitYear);
             units++;
         }
         if (diffInMonths > 0 && units < 2) {
-            output += String.format(this.currentLocale, "%d mese(s) ", concreteMonths);
+            String strUnitMonth = (diffInMonths > 1) ? resources.getString(R.string.plural_month) : resources.getString(R.string.singular_month);
+            output += String.format(this.currentLocale, "%d %s ", concreteMonths, strUnitMonth);
             units++;
         }
         if (diffInDays > 0 && units < 2) {
-            output += String.format(this.currentLocale, "%d dia(s) ", concreteDays);
+            String strUnitDay = (diffInDays > 1) ? resources.getString(R.string.plural_day) : resources.getString(R.string.singular_day);
+            output += String.format(this.currentLocale, "%d %s ", concreteDays, strUnitDay);
             units++;
         }
         if (diffInHours > 0 && units < 2) {
-            output += String.format(this.currentLocale, "%d hora(s) ", concreteHours);
+            String strUnitHour = (diffInHours > 1) ? resources.getString(R.string.plural_hour) : resources.getString(R.string.singular_hour);
+            output += String.format(this.currentLocale, "%d %s ", concreteHours, strUnitHour);
             units++;
         }
         if (diffInMinutes > 0 && units < 2) {
-            output += String.format(this.currentLocale, "%d minuto(s) ", concreteMinutes);
+            String strUnitMinute = (diffInMinutes > 1) ? resources.getString(R.string.plural_minute) : resources.getString(R.string.singular_minute);
+            output += String.format(this.currentLocale, "%d %s ", concreteMinutes, strUnitMinute);
+            units++;
+        }
+        if (diffInSeconds > 0 && units < 2) {
+            String strUnitSecond = (diffInSeconds > 1) ? resources.getString(R.string.plural_second) : resources.getString(R.string.singular_second);
+            output += String.format(this.currentLocale, "%d %s ", concreteMinutes, strUnitSecond);
             units++;
         }
 
@@ -91,9 +124,7 @@ public class OccurrenceDateTimeHandler {
         SECOND(1000L), MINUTE(60000L), HOUR(3600000L), DAY(86400000L), WEEK(604800000L), MONTH(2592000000L),
         YEAR(31104000000L);
 
-
         private long value;
-
 
         private TimeUnits (long val) {
             this.value = val;

@@ -24,14 +24,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.sop.cacapp.Classes.OccurrenceDateTimeHandler;
 import com.sop.cacapp.Classes.Profile;
 import com.sop.cacapp.Persistence.PoopOccurrencePersistent;
 import com.sop.cacapp.Persistence.ProfilePersistent;
 import com.sop.cacapp.R;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 
 public class MainFragment extends Fragment {
@@ -44,7 +41,6 @@ public class MainFragment extends Fragment {
     private TextView tvAvgFrequency;
     private TextView tvLastDepositionDate;
     private TextView tvLastDepositionTimeElapsed;
-    private int daysElapsed;
     private Timestamp registerDateTimestamp;
 
     private Dialog mDialog;
@@ -57,8 +53,16 @@ public class MainFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.main_fragment, container, false);
 
+        view = inflater.inflate(R.layout.main_fragment, container, false);
+        initViews(view);
+        LoadData();
+        InitListeners();
+
+        return view;
+    }
+
+    private void initViews(View view) {
         btnAddPoop = view.findViewById(R.id.btnAddPoopRecord);
         tvRegisterDate = view.findViewById(R.id.tvRegisterDate);
         tvDepositionCounter = view.findViewById(R.id.tvDepositionCounter);
@@ -66,36 +70,19 @@ public class MainFragment extends Fragment {
         tvAvgFrequency = view.findViewById(R.id.tvAvgFrequency);
         tvLastDepositionDate = view.findViewById(R.id.tvLastDepositionDate);
         tvLastDepositionTimeElapsed = view.findViewById(R.id.tvLastDepositionTimeElapsed);
-
         mDialog = new Dialog(view.getContext());
-
-        LoadData();
-
-        InitListeners();
-
-        return view;
     }
 
     private void InitListeners() {
         btnAddPoop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(view.getContext(), "Creando deposición", Toast.LENGTH_SHORT).show();
-                //PoopOccurrencePersistent dbAccessor = new PoopOccurrencePersistent();
-                //dbAccessor.CreatePoopOccurrence(view);
                 showDialog();
-
-                /*dbAccessor.CreatePoopOccurrenceTwo(view, new PoopOccurrencePersistent.OnCreatePoopOccurrenceListener() {
-                    @Override
-                    public void onCallBack(Map<String, Object> data) {
-                        Toast.makeText(view.getContext(), "Deposición guardada", Toast.LENGTH_SHORT).show();
-                    }
-                });*/
             }
         });
     }
 
-    private void loadReloader() {
+    private void reloadCalculatedDataWithListener() {
         DocumentReference doc = new PoopOccurrencePersistent().getmCollectedDataReference();
         doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -106,26 +93,31 @@ public class MainFragment extends Fragment {
                     return;
                 }
                 if (documentSnapshot != null && documentSnapshot.exists()) {
-                    daysElapsed = GetDaysDifference(registerDateTimestamp.toDate(), new Date());
-                    int dposCounter = documentSnapshot.getLong("deposition_counter").intValue();
-                    tvDepositionCounter.setText(documentSnapshot.getData().get("deposition_counter").toString());
-                    tvDayCounter.setText(""+daysElapsed);
-                    if (documentSnapshot.get("last_deposition_date") instanceof String) {
-                        tvLastDepositionDate.setText("Sin registros aun");
-                        tvLastDepositionTimeElapsed.setText(documentSnapshot.getString("last_deposition_date"));
-                    } else {
-                        Timestamp last = documentSnapshot.getTimestamp("last_deposition_date");
-                        if (getContext() != null) {
-                            tvLastDepositionDate.setText(getDateTime(last));
+                    if (getContext() != null) {
+                        OccurrenceDateTimeHandler registerDate = new OccurrenceDateTimeHandler(registerDateTimestamp, getContext());
+
+                        tvDepositionCounter.setText(String.format(getResources().getConfiguration().locale, "%d", documentSnapshot.getLong("deposition_counter")));
+                        tvDayCounter.setText(registerDate.getTimeElapsed());
+
+                        long timeFrequency = documentSnapshot.getLong("deposition_mean_frequency");
+                        tvAvgFrequency.setText(registerDate.getTimeElapsedByDiffTime(timeFrequency));
+
+                        if (documentSnapshot.get("last_deposition_date") instanceof String) {
+                            tvLastDepositionDate.setText("Sin registros aun");
+                            tvLastDepositionTimeElapsed.setText(documentSnapshot.getString("last_deposition_date"));
                         } else {
-                            tvLastDepositionDate.setText("No cargó");
+                            Timestamp last = documentSnapshot.getTimestamp("last_deposition_date");
+                            OccurrenceDateTimeHandler lastOccurrence = new OccurrenceDateTimeHandler(last, getContext());
+
+                            tvLastDepositionDate.setText(lastOccurrence.getFullOccurrenceDateTime());
+                            tvLastDepositionTimeElapsed.setText(lastOccurrence.getTimeElapsed());
                         }
-                        //tvLastDepositionDate.setText(getDateTime(last));
-                        tvLastDepositionTimeElapsed.setText(GetTimeDifference(last.toDate(), new Date()));
+                    } else {
+                        Toast.makeText(getContext(), "Contexto null", Toast.LENGTH_SHORT).show();
                     }
-                    long timeFrequency = documentSnapshot.getLong("deposition_mean_frequency");
-                    tvAvgFrequency.setText(getTimeFormatFromDifference(timeFrequency));
-                    //tvAvgFrequency.setText(Double.toString(getDepositionFrequency(daysElapsed, dposCounter)));
+
+                } else {
+                    Toast.makeText(getContext(), "No data or does not exist", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -139,78 +131,20 @@ public class MainFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onCallBack(boolean isSuccess, Profile profile) {
-                if (isSuccess) {
+                if (isSuccess && getContext() != null) {
+
                     registerDateTimestamp = profile.getRegisterDate();
-                    tvRegisterDate.setText(getDateTime(registerDateTimestamp));
-                    daysElapsed = GetDaysDifference(registerDateTimestamp.toDate(), new Date());
-                    tvDayCounter.setText(GetTimeDifference(registerDateTimestamp.toDate(), new Date()));
+                    tvRegisterDate.setText(new OccurrenceDateTimeHandler(registerDateTimestamp, getContext()).getFullOccurrenceDateTime());
+                    reloadCalculatedDataWithListener();
+
                 } else {
-                    Toast.makeText(getContext(), "No se pudo cargar algunos datos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "No se pudo cargar datos", Toast.LENGTH_SHORT).show();
                 }
-                loadReloader();
             }
         });
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public String getDateTime(Timestamp ts) {
-        Date date = ts.toDate();
-        String pattern = "dd MMMM yyyy hh:mm aa";
-        Locale current = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) ? this.getContext().getResources().getConfiguration().getLocales().get(0) : this.getContext().getResources().getConfiguration().locale;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, current);
-        return simpleDateFormat.format(date);
-    }
-
-    public String GetTimeDifference(Date d1, Date d2) {
-        int timeDiff = 0;
-        String unidad = "dia(s)";
-        long diff = d2.getTime() - d1.getTime();
-        long diffDays = diff / (24 * 60 * 60 * 1000);
-        if (diffDays < 1) {
-            // Set to hours
-            unidad = "hora(s)";
-            diffDays = diff / (60 * 60 * 1000) ;
-            if (diffDays < 1) {
-                // Set to minutes
-                unidad = "minutos";
-                diffDays = diff / (60 * 1000) ;
-            }
-        }
-        timeDiff = (int) diffDays;
-        String msg = "" + timeDiff + " " + unidad;
-        return msg;
-    }
-
-    public int GetDaysDifference(Date d1, Date d2) {
-        int timeDiff = 0;
-        long diff = d2.getTime() - d1.getTime();
-        long diffDays = diff / (24 * 60 * 60 * 1000);
-        timeDiff = (int) diffDays;
-        return timeDiff;
-    }
-
-    public double getDepositionFrequency(int numOfDays, int numOfDepositions) {
-        double res = 0;
-        if (numOfDepositions > 0) {
-            res = (double) numOfDays / numOfDepositions;
-        }
-        return res;
-    }
-
-    private String getTimeFormatFromDifference(long timeDifference) {
-        int diffDays = (int) (timeDifference / (24 * 60 * 60 * 1000));
-        int diffHours = (int) (timeDifference / (60 * 60 * 1000));
-        int diffMinutes = (int) (timeDifference / (60 * 1000));
-        int concreteDays = diffDays;
-        int concreteHours = diffHours - (concreteDays * 24);
-        int concreteMinutes = diffMinutes - ((concreteHours + (concreteDays * 24)) * 60);
-        String output = "";
-        output += (concreteDays > 0) ? String.format("%d dias ", concreteDays) : "";
-        output += (concreteHours > 0) ? String.format("%d horas ", concreteHours) : "";
-        output += String.format("%d minutos", concreteMinutes);
-        return output;
-    }
 
     private void showDialog() {
         final RatingBar ratingBarDepositionSatisfaction;
