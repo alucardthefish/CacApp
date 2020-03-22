@@ -26,6 +26,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.sop.cacapp.Classes.OccurrenceDateTimeHandler;
 import com.sop.cacapp.Classes.Profile;
+import com.sop.cacapp.LoaderDialog;
 import com.sop.cacapp.Persistence.PoopOccurrencePersistent;
 import com.sop.cacapp.Persistence.ProfilePersistent;
 import com.sop.cacapp.R;
@@ -44,6 +45,7 @@ public class MainFragment extends Fragment {
     private Timestamp registerDateTimestamp;
 
     private Dialog mDialog;
+    private LoaderDialog loadingBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,6 +73,7 @@ public class MainFragment extends Fragment {
         tvLastDepositionDate = view.findViewById(R.id.tvLastDepositionDate);
         tvLastDepositionTimeElapsed = view.findViewById(R.id.tvLastDepositionTimeElapsed);
         mDialog = new Dialog(view.getContext());
+        loadingBar = new LoaderDialog(view.getContext());
     }
 
     private void InitListeners() {
@@ -89,11 +92,12 @@ public class MainFragment extends Fragment {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
+                    loadingBar.stopLoading();
                     Log.d("snaplistener", "Listen Failed.");
                     return;
                 }
                 if (documentSnapshot != null && documentSnapshot.exists()) {
-                    if (getContext() != null) {
+                    if (view.getContext() != null) {
                         OccurrenceDateTimeHandler registerDate = new OccurrenceDateTimeHandler(registerDateTimestamp, getContext());
 
                         tvDepositionCounter.setText(String.format(getResources().getConfiguration().locale, "%d", documentSnapshot.getLong("deposition_counter")));
@@ -112,12 +116,16 @@ public class MainFragment extends Fragment {
                             tvLastDepositionDate.setText(lastOccurrence.getFullOccurrenceDateTime());
                             tvLastDepositionTimeElapsed.setText(lastOccurrence.getTimeElapsed());
                         }
+                        loadingBar.stopLoading();
                     } else {
-                        Toast.makeText(getContext(), "Contexto null", Toast.LENGTH_SHORT).show();
+                        loadingBar.stopLoading();
+                        Toast.makeText(view.getContext(), "Contexto null", Toast.LENGTH_SHORT).show();
+
                     }
 
                 } else {
-                    Toast.makeText(getContext(), "No data or does not exist", Toast.LENGTH_SHORT).show();
+                    loadingBar.stopLoading();
+                    Toast.makeText(view.getContext(), "No data or does not exist", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -125,6 +133,7 @@ public class MainFragment extends Fragment {
 
     private void LoadData() {
         // Load info in the text views
+        loadingBar.startLoading();
         ProfilePersistent dbProfile = new ProfilePersistent();
 
         dbProfile.GetProfile(new ProfilePersistent.MyCallback() {
@@ -136,8 +145,10 @@ public class MainFragment extends Fragment {
                     registerDateTimestamp = profile.getRegisterDate();
                     tvRegisterDate.setText(new OccurrenceDateTimeHandler(registerDateTimestamp, getContext()).getFullOccurrenceDateTime());
                     reloadCalculatedDataWithListener();
+                    loadingBar.stopLoading();
 
                 } else {
+                    loadingBar.stopLoading();
                     Toast.makeText(getContext(), "No se pudo cargar datos", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -171,10 +182,13 @@ public class MainFragment extends Fragment {
                 PoopOccurrencePersistent dbAccessor = new PoopOccurrencePersistent();
                 dbAccessor.CreatePoopOccurrence(view, satisfaction);
                 mDialog.dismiss();
+                loadingBar.startLoading();
                 Log.d("Dialog", "Dialog accepted with a satisfaction of: " + satisfaction);
             }
         });
 
+        mDialog.setCancelable(false);
+        mDialog.setCanceledOnTouchOutside(false);
         mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         mDialog.show();
 
