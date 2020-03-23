@@ -68,12 +68,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser() {
+        Toast.makeText(LoginActivity.this, "Ingresando...", Toast.LENGTH_LONG).show();
         loadingDialog.startLoading();
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
-                    Toast.makeText(LoginActivity.this, "Ingresando...", Toast.LENGTH_LONG).show();
                     // Send to activity main
                     Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(i);

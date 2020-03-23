@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.signOut:
                         mAuth.signOut();
+                        new LoaderDialog(MainActivity.this).startLoading();
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
                         finish();
                 }
