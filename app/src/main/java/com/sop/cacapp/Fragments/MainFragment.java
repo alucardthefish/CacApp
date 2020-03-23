@@ -87,7 +87,7 @@ public class MainFragment extends Fragment {
     }
 
     private void reloadCalculatedDataWithListener() {
-        DocumentReference doc = new PoopOccurrencePersistent().getmCollectedDataReference();
+        DocumentReference doc = new PoopOccurrencePersistent().getCalculatedDataDocRef();
         doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override

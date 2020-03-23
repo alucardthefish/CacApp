@@ -61,7 +61,7 @@ public class FecalDiaryFragment extends Fragment {
     }
 
     public void loadList() {
-        CollectionReference poopOccurrencesReference = new PoopOccurrencePersistent().getmReference();
+        CollectionReference poopOccurrencesReference = new PoopOccurrencePersistent().getPoopOccurrencesRef();
         poopOccurrencesReference
                 .orderBy("occurrenceTime", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {

@@ -36,8 +36,8 @@ public class PoopOccurrencePersistent {
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private FirebaseFirestore mDataBase;
-    private CollectionReference mReference;
-    private DocumentReference mCollectedDataReference;
+    private CollectionReference poopOccurrencesRef;
+    private DocumentReference calculatedDataDocRef;
     private boolean status;
 
     public PoopOccurrencePersistent() {
@@ -47,13 +47,13 @@ public class PoopOccurrencePersistent {
 
         this.mDataBase = FirebaseFirestore.getInstance();
         //mDataBase.setFirestoreSettings(settings);
-        this.mReference = mDataBase.collection("users")
+        this.poopOccurrencesRef = mDataBase.collection("users")
                 .document(currentUser.getUid())
                 .collection("business_data")
                 .document("cacap")
                 .collection("poop_occurrences");
 
-        this.mCollectedDataReference = mDataBase.collection("users")
+        this.calculatedDataDocRef = mDataBase.collection("users")
                 .document(currentUser.getUid())
                 .collection("business_data")
                 .document("cacap")
@@ -61,12 +61,12 @@ public class PoopOccurrencePersistent {
                 .document("global");
     }
 
-    public DocumentReference getmCollectedDataReference() {
-        return mCollectedDataReference;
+    public DocumentReference getCalculatedDataDocRef() {
+        return calculatedDataDocRef;
     }
 
-    public CollectionReference getmReference() {
-        return mReference;
+    public CollectionReference getPoopOccurrencesRef() {
+        return poopOccurrencesRef;
     }
 
     public PoopOccurrencePersistent(boolean stat) {
@@ -75,7 +75,7 @@ public class PoopOccurrencePersistent {
 
     public void CreatePoopOccurrence(final View view, float satisfaction) {
         final PoopOccurrence depositionDateTime = new PoopOccurrence(satisfaction);
-        mReference.add(depositionDateTime)
+        poopOccurrencesRef.add(depositionDateTime)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
@@ -93,7 +93,7 @@ public class PoopOccurrencePersistent {
 
     public void addPoopOccurrence(final View view, final PoopOccurrence poopOccurrence) {
 
-        mCollectedDataReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        calculatedDataDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
@@ -133,10 +133,10 @@ public class PoopOccurrencePersistent {
         //Generate new id for the new occurrence
         String occurrenceId = UUID.randomUUID().toString();
         // Set the new occurrence to batch
-        batch.set(mReference.document(occurrenceId), poopOccurrence);
+        batch.set(poopOccurrencesRef.document(occurrenceId), poopOccurrence);
 
         // Update calculated data
-        batch.update(mCollectedDataReference, calculatedObject);
+        batch.update(calculatedDataDocRef, calculatedObject);
 
         // Commit all the transactions
         batch.commit()
@@ -158,11 +158,11 @@ public class PoopOccurrencePersistent {
         data.put("last_deposition_date", "NoDate");
         data.put("first_deposition_date", "NoDate");
         data.put("deposition_mean_frequency", 0);
-        mCollectedDataReference.set(data);
+        calculatedDataDocRef.set(data);
     }
 
     public void UpdateCalculatedData(final Timestamp current_date) {
-        mCollectedDataReference
+        calculatedDataDocRef
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -196,7 +196,7 @@ public class PoopOccurrencePersistent {
         } else {
             data.put("first_deposition_date", current_date);
         }
-        mCollectedDataReference
+        calculatedDataDocRef
                 .update(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -213,7 +213,7 @@ public class PoopOccurrencePersistent {
     }
 
     public void GetCalculatedData(final MyCallback myCallback) {
-        mCollectedDataReference.get()
+        calculatedDataDocRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -227,7 +227,7 @@ public class PoopOccurrencePersistent {
     }
 
     public void getMyPoopData(final PoopDataCallback callback) {
-        mReference
+        poopOccurrencesRef
                 .orderBy("occurrenceTime", Query.Direction.ASCENDING)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -271,7 +271,7 @@ public class PoopOccurrencePersistent {
     }
 
     public void getMyPoopSatisfactionData(final PoopSatisfactionDataCallback callback) {
-        mReference
+        poopOccurrencesRef
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
