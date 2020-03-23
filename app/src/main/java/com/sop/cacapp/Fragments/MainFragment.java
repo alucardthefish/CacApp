@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.sop.cacapp.Classes.OccurrenceDateTimeHandler;
+import com.sop.cacapp.Classes.PoopOccurrence;
 import com.sop.cacapp.Classes.Profile;
 import com.sop.cacapp.LoaderDialog;
 import com.sop.cacapp.Persistence.PoopOccurrencePersistent;
@@ -98,9 +99,9 @@ public class MainFragment extends Fragment {
                 }
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     if (view.getContext() != null) {
-                        OccurrenceDateTimeHandler registerDate = new OccurrenceDateTimeHandler(registerDateTimestamp, getContext());
+                        OccurrenceDateTimeHandler registerDate = new OccurrenceDateTimeHandler(registerDateTimestamp, view.getContext());
 
-                        tvDepositionCounter.setText(String.format(getResources().getConfiguration().locale, "%d", documentSnapshot.getLong("deposition_counter")));
+                        tvDepositionCounter.setText(String.format(view.getResources().getConfiguration().locale, "%d", documentSnapshot.getLong("deposition_counter")));
                         tvDayCounter.setText(registerDate.getTimeElapsed());
 
                         long timeFrequency = documentSnapshot.getLong("deposition_mean_frequency");
@@ -111,7 +112,7 @@ public class MainFragment extends Fragment {
                             tvLastDepositionTimeElapsed.setText(documentSnapshot.getString("last_deposition_date"));
                         } else {
                             Timestamp last = documentSnapshot.getTimestamp("last_deposition_date");
-                            OccurrenceDateTimeHandler lastOccurrence = new OccurrenceDateTimeHandler(last, getContext());
+                            OccurrenceDateTimeHandler lastOccurrence = new OccurrenceDateTimeHandler(last, view.getContext());
 
                             tvLastDepositionDate.setText(lastOccurrence.getFullOccurrenceDateTime());
                             tvLastDepositionTimeElapsed.setText(lastOccurrence.getTimeElapsed());
@@ -179,8 +180,10 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 float satisfaction = ratingBarDepositionSatisfaction.getRating();
+                PoopOccurrence poopOccurrence = new PoopOccurrence(satisfaction);
                 PoopOccurrencePersistent dbAccessor = new PoopOccurrencePersistent();
-                dbAccessor.CreatePoopOccurrence(view, satisfaction);
+                dbAccessor.addPoopOccurrence(view, poopOccurrence);
+
                 mDialog.dismiss();
                 loadingBar.startLoading();
                 Log.d("Dialog", "Dialog accepted with a satisfaction of: " + satisfaction);

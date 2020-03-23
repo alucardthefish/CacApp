@@ -20,6 +20,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.sop.cacapp.Classes.PoopOccurrence;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.UUID;
 
 public class PoopOccurrencePersistent {
 
@@ -89,45 +91,65 @@ public class PoopOccurrencePersistent {
                 });
     }
 
-    public void CreatePoopOccurrenceTwo(final View view, final OnCreatePoopOccurrenceListener listenerCallback) {
-        final PoopOccurrence depositionDateTime = new PoopOccurrence();
-        mReference.add(depositionDateTime)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(view.getContext(), "En hora buena", Toast.LENGTH_SHORT).show();
+    public void addPoopOccurrence(final View view, final PoopOccurrence poopOccurrence) {
+
+        mCollectedDataReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+
+                    long depositionCounter = documentSnapshot.getLong("deposition_counter");
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("deposition_counter", FieldValue.increment(1));
+
+                    if (depositionCounter > 0) {
+                        Timestamp first_date = documentSnapshot.getTimestamp("first_deposition_date");
+                        long firstDepositionTime = first_date.toDate().getTime();
+                        long totalTime = poopOccurrence.getOccurrenceTime().toDate().getTime() - firstDepositionTime;
+                        long deposition_mean_frequency = totalTime / (depositionCounter);
+                        data.put("last_deposition_date", poopOccurrence.getOccurrenceTime());
+                        data.put("deposition_mean_frequency", deposition_mean_frequency);
+
+                        CreateDepositionAndUpdateCalculatedData(poopOccurrence, data, view);
+
+                    } else {
+                        // Initial: enters once
+                        data.put("last_deposition_date", poopOccurrence.getOccurrenceTime());
+                        data.put("first_deposition_date", poopOccurrence.getOccurrenceTime());
+                        CreateDepositionAndUpdateCalculatedData(poopOccurrence, data, view);
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(view.getContext(), "Paila mi so", Toast.LENGTH_SHORT).show();
-                    }
-                });
-        mCollectedDataReference
-                .update(
-                        "deposition_counter", FieldValue.increment(1),
-                        "last_deposition_date", depositionDateTime.getOccurrenceTime())
+                } else {
+                    Log.d("onSuccess", "Document does not exist");
+                }
+            }
+        });
+
+
+    }
+
+    public void CreateDepositionAndUpdateCalculatedData(PoopOccurrence poopOccurrence, Map<String, Object> calculatedObject, final View view) {
+
+        WriteBatch batch = mDataBase.batch();
+        //Generate new id for the new occurrence
+        String occurrenceId = UUID.randomUUID().toString();
+        // Set the new occurrence to batch
+        batch.set(mReference.document(occurrenceId), poopOccurrence);
+
+        // Update calculated data
+        batch.update(mCollectedDataReference, calculatedObject);
+
+        // Commit all the transactions
+        batch.commit()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            mCollectedDataReference.get()
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            listenerCallback.onCallBack(documentSnapshot.getData());
-                                        }
-                                    });
+                        if (task.isSuccessful()) {
+                            Toast.makeText(view.getContext(), "Deposición guardada", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(view.getContext(), "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            Log.d("onComplete", "CreateDepositionAndUpdateCalculatedData task failed");
                         }
                     }
                 });
-    }
-
-    public interface OnCreatePoopOccurrenceListener {
-        void onCallBack(Map<String, Object> data);
     }
 
     public void CreateCalculatedData() {
@@ -202,14 +224,6 @@ public class PoopOccurrencePersistent {
 
     public interface MyCallback {
         void onCallBack(Map<String, Object> data);
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
     }
 
     public void getMyPoopData(final PoopDataCallback callback) {
