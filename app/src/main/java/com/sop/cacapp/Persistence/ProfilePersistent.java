@@ -2,13 +2,16 @@ package com.sop.cacapp.Persistence;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.sop.cacapp.Classes.Profile;
 
 public class ProfilePersistent {
@@ -43,6 +46,27 @@ public class ProfilePersistent {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         listener.onCallBack(false);
+                    }
+                });
+    }
+
+    public void saveProfileAndInit(Profile profile, final OnCreateProfileListener callback) {
+        WriteBatch batch = mDataBase.batch();
+        // Set the profile data
+        batch.set(profileReference, profile);
+        // Create initial data for calculated data document
+        PoopOccurrencePersistent poopOccurrencePersistent = new PoopOccurrencePersistent();
+        batch.set(poopOccurrencePersistent.getCalculatedDataDocRef(), poopOccurrencePersistent.getMapOfInitialCalculatedData());
+
+        batch.commit()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isComplete() && task.isSuccessful()) {
+                            callback.onCallBack(true);
+                        } else {
+                            callback.onCallBack(false);
+                        }
                     }
                 });
     }

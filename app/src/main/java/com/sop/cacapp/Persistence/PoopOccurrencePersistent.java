@@ -7,7 +7,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -38,10 +37,8 @@ public class PoopOccurrencePersistent {
     private FirebaseFirestore mDataBase;
     private CollectionReference poopOccurrencesRef;
     private DocumentReference calculatedDataDocRef;
-    private boolean status;
 
     public PoopOccurrencePersistent() {
-        this.status = false;
         this.mAuth = FirebaseAuth.getInstance();
         this.currentUser = mAuth.getCurrentUser();
 
@@ -67,28 +64,6 @@ public class PoopOccurrencePersistent {
 
     public CollectionReference getPoopOccurrencesRef() {
         return poopOccurrencesRef;
-    }
-
-    public PoopOccurrencePersistent(boolean stat) {
-        this.status = stat;
-    }
-
-    public void CreatePoopOccurrence(final View view, float satisfaction) {
-        final PoopOccurrence depositionDateTime = new PoopOccurrence(satisfaction);
-        poopOccurrencesRef.add(depositionDateTime)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        UpdateCalculatedData(depositionDateTime.getOccurrenceTime());
-                        Toast.makeText(view.getContext(), "En hora buena", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(view.getContext(), "Paila mi so", Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     public void addPoopOccurrence(final View view, final PoopOccurrence poopOccurrence) {
@@ -152,78 +127,13 @@ public class PoopOccurrencePersistent {
                 });
     }
 
-    public void CreateCalculatedData() {
+    public Map<String, Object> getMapOfInitialCalculatedData() {
         Map<String, Object> data = new HashMap<>();
         data.put("deposition_counter", 0);
         data.put("last_deposition_date", "NoDate");
         data.put("first_deposition_date", "NoDate");
         data.put("deposition_mean_frequency", 0);
-        calculatedDataDocRef.set(data);
-    }
-
-    public void UpdateCalculatedData(final Timestamp current_date) {
-        calculatedDataDocRef
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            int deposition_counter =  documentSnapshot.getDouble("deposition_counter").intValue();
-                            long diff = 0;
-                            if (documentSnapshot.get("last_deposition_date") instanceof String) {
-                                updateByDepositionCounter(deposition_counter,
-                                        diff,
-                                        current_date);
-                            } else {
-                                Timestamp first_date = documentSnapshot.getTimestamp("first_deposition_date");
-                                diff = current_date.toDate().getTime() - first_date.toDate().getTime();
-                                updateByDepositionCounter(deposition_counter,
-                                        diff,
-                                        current_date);
-                            }
-                        }
-                    }
-                });
-    }
-
-    private void updateByDepositionCounter(int counter, long timeDiff, Timestamp current_date) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("deposition_counter", FieldValue.increment(1));
-        data.put("last_deposition_date", current_date);
-        if (counter > 0) {
-            double deposition_mean_frequency = timeDiff / (counter);
-            data.put("deposition_mean_frequency", deposition_mean_frequency);
-        } else {
-            data.put("first_deposition_date", current_date);
-        }
-        calculatedDataDocRef
-                .update(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("ByDepositionCounter", "Successfully updated");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("ByDepositionCounter", "Fail to update");
-                    }
-                });
-    }
-
-    public void GetCalculatedData(final MyCallback myCallback) {
-        calculatedDataDocRef.get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        myCallback.onCallBack(documentSnapshot.getData());
-                    }
-                });
-    }
-
-    public interface MyCallback {
-        void onCallBack(Map<String, Object> data);
+        return data;
     }
 
     public void getMyPoopData(final PoopDataCallback callback) {

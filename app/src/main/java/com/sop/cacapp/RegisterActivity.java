@@ -88,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (!email.isEmpty() && !pass.isEmpty() && !name.isEmpty()) {
                     registerUser();
                 } else {
-                    Toast.makeText(RegisterActivity.this, "Los campos con * no son obligatorios", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Los campos con * son obligatorios", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -135,13 +135,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void createUserProfile(Profile profile) {
         ProfilePersistent profilePersistent = new ProfilePersistent();
-        profilePersistent.createProfile(profile, new ProfilePersistent.OnCreateProfileListener() {
+        profilePersistent.saveProfileAndInit(profile, new ProfilePersistent.OnCreateProfileListener() {
             @Override
             public void onCallBack(boolean isSuccess) {
                 if (isSuccess) {
                     Toast.makeText(RegisterActivity.this, "Perfil de usuario creado!", Toast.LENGTH_SHORT).show();
-                    PoopOccurrencePersistent globalPoop = new PoopOccurrencePersistent();
-                    globalPoop.CreateCalculatedData();
                     Intent i = new Intent(RegisterActivity.this, MainActivity.class);
                     startActivity(i);
                     finish();
