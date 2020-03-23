@@ -9,12 +9,12 @@
     <string name="singular_day">día</string>
     <string name="singular_hour">hora</string>
     <string name="singular_minute">minuto</string>
-    <string name="singular_second">segudo</string>
+    <string name="singular_second">segundo</string>
     <string name="plural_year">años</string>
     <string name="plural_month">meses</string>
     <string name="plural_week">semanas</string>
     <string name="plural_day">días</string>
     <string name="plural_hour">horas</string>
     <string name="plural_minute">minutos</string>
-    <string name="plural_second">segudos</string>
+    <string name="plural_second">segundos</string>
 </resources>

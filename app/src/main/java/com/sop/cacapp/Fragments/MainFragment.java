@@ -108,8 +108,8 @@ public class MainFragment extends Fragment {
                         tvAvgFrequency.setText(registerDate.getTimeElapsedByDiffTime(timeFrequency));
 
                         if (documentSnapshot.get("last_deposition_date") instanceof String) {
-                            tvLastDepositionDate.setText("Sin registros aun");
-                            tvLastDepositionTimeElapsed.setText(documentSnapshot.getString("last_deposition_date"));
+                            tvLastDepositionDate.setText("Sin registros aún");
+                            tvLastDepositionTimeElapsed.setText("Sin registros aún");
                         } else {
                             Timestamp last = documentSnapshot.getTimestamp("last_deposition_date");
                             OccurrenceDateTimeHandler lastOccurrence = new OccurrenceDateTimeHandler(last, view.getContext());

@@ -20,7 +20,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sop.cacapp.Classes.Profile;
-import com.sop.cacapp.Persistence.PoopOccurrencePersistent;
 import com.sop.cacapp.Persistence.ProfilePersistent;
 
 
@@ -34,6 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText etWeight;
     private RadioGroup rgGender;
     private Button btnRegister;
+    private LoaderDialog loadingDialog;
 
     private String email;
     private String pass;
@@ -62,6 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
         etWeight = findViewById(R.id.etUserWeight);
         rgGender = findViewById(R.id.genderOptions);
         btnRegister = findViewById(R.id.btnToRegister);
+        loadingDialog = new LoaderDialog(RegisterActivity.this);
 
         email = "";
         pass = "";
@@ -95,7 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser() {
-
+        loadingDialog.startLoading();
         mAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -121,12 +122,14 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, "Perfil actualizado", Toast.LENGTH_SHORT).show();
                                 createUserProfile(profile);
                             } else {
+                                loadingDialog.stopLoading();
                                 Toast.makeText(RegisterActivity.this, "Perfil no se pudo crear y actualizar", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
 
                 } else {
+                    loadingDialog.stopLoading();
                     Toast.makeText(RegisterActivity.this, "Ya existe una cuenta asociada a este correo o: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
@@ -134,6 +137,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void createUserProfile(Profile profile) {
+        loadingDialog.startLoading();
         ProfilePersistent profilePersistent = new ProfilePersistent();
         profilePersistent.saveProfileAndInit(profile, new ProfilePersistent.OnCreateProfileListener() {
             @Override
@@ -144,6 +148,7 @@ public class RegisterActivity extends AppCompatActivity {
                     startActivity(i);
                     finish();
                 } else {
+                    loadingDialog.stopLoading();
                     Toast.makeText(RegisterActivity.this, "No se pudo crear el perfil", Toast.LENGTH_SHORT).show();
                 }
             }

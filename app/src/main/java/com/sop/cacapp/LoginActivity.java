@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,9 +23,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mEditTextPassword;
     private Button mButtonRegister;
     private Button mButtonToLogin;
-    private ProgressBar mProgressBarLogin;
+    private LoaderDialog loadingDialog;
 
-    // Variables de los datos que vamos a registrar
     private String email = "";
     private String password = "";
 
@@ -39,9 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-
-        mProgressBarLogin = findViewById(R.id.progressBarLogin);
-        mProgressBarLogin.setVisibility(ProgressBar.GONE);
+        loadingDialog = new LoaderDialog(LoginActivity.this);
 
         mEditTextEmail = findViewById(R.id.editTextEmail);
         mEditTextPassword = findViewById(R.id.editTextPassword);
@@ -72,13 +68,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser() {
-        activateProgressBar(true);
+        loadingDialog.startLoading();
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     Toast.makeText(LoginActivity.this, "Ingresando...", Toast.LENGTH_LONG).show();
-                    FirebaseUser currentUser = mAuth.getCurrentUser();
                     // Send to activity main
                     Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(i);
@@ -86,20 +81,10 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(LoginActivity.this, "Hubo un error", Toast.LENGTH_LONG).show();
                     Log.d("LoginUser", task.getException().getMessage());
-                    activateProgressBar(false);
+                    loadingDialog.stopLoading();
                 }
             }
         });
     }
 
-    private void activateProgressBar(boolean active){
-        mEditTextEmail.setEnabled(!active);
-        mEditTextPassword.setEnabled(!active);
-        mButtonToLogin.setEnabled(!active);
-        if (active){
-            mProgressBarLogin.setVisibility(ProgressBar.VISIBLE);
-        } else {
-            mProgressBarLogin.setVisibility(ProgressBar.GONE);
-        }
-    }
 }
