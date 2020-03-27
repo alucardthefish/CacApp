@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,9 +22,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText mEditTextEmail;
     private EditText mEditTextPassword;
-    private Button mButtonRegister;
     private Button mButtonToLogin;
     private LoaderDialog loadingDialog;
+    private TextView tvLinkerTowardsRegister;
 
     private String email = "";
     private String password = "";
@@ -38,16 +39,16 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         loadingDialog = new LoaderDialog(LoginActivity.this);
+        tvLinkerTowardsRegister = findViewById(R.id.tvLinkerTowardsRegister);
 
         mEditTextEmail = findViewById(R.id.editTextEmail);
         mEditTextPassword = findViewById(R.id.editTextPassword);
-        mButtonRegister = findViewById(R.id.btnRegister);
-        mButtonRegister.setOnClickListener(new View.OnClickListener() {
+
+        tvLinkerTowardsRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Send to register activity
-                Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(i);
+                Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(registerIntent);
             }
         });
 
