@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.sop.cacapp.Fragments.FecalDiaryFragment;
 import com.sop.cacapp.Fragments.MainFragment;
 import com.sop.cacapp.Fragments.PoopStatisticsFragment;
+import com.sop.cacapp.Fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -120,6 +121,9 @@ public class MainActivity extends AppCompatActivity {
                         new LoaderDialog(MainActivity.this).startLoading();
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
                         finish();
+                    case R.id.profile:
+                        fragmentTransaction.replace(R.id.container, new ProfileFragment());
+                        break;
                 }
                 fragmentTransaction.commit();
                 return false;
