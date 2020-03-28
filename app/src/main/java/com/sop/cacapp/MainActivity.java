@@ -75,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize listeners
         initListeners();
-
+        // TODO https://www.youtube.com/watch?v=Wf7DDIaRYjk
+        // TODO https://www.youtube.com/watch?v=JlfW4UvRiwc
     }
 
     @Override

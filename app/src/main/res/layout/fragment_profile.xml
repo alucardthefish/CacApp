@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="#778C16">
+        android:background="#16778C">
         
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,6 +33,7 @@
                     android:contentDescription="Profile picture" />
 
                 <TextView
+                    android:id="@+id/tvProfileUsername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="22sp"
@@ -61,6 +62,7 @@
                     android:gravity="center">
                     
                     <TextView
+                        android:id="@+id/tvProfileNumDays"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="6"
@@ -90,6 +92,7 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/tvProfileNumSymptoms"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="29"
@@ -119,6 +122,7 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/tvProfileNumDepositions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="8"
@@ -162,6 +166,7 @@
                     android:text="Email"/>
 
                 <TextView
+                    android:id="@+id/tvProfileEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#FFF333"
@@ -191,6 +196,7 @@
                     android:text="Edad"/>
 
                 <TextView
+                    android:id="@+id/tvProfileAge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#FFF333"
@@ -220,6 +226,7 @@
                     android:text="Peso"/>
 
                 <TextView
+                    android:id="@+id/tvProfileWeight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#FFF333"
@@ -249,6 +256,7 @@
                     android:text="Estatura"/>
 
                 <TextView
+                    android:id="@+id/tvProfileHeight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#FFF333"
