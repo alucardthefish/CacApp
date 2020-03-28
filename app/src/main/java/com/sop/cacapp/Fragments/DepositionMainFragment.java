@@ -33,7 +33,7 @@ import com.sop.cacapp.Persistence.ProfilePersistent;
 import com.sop.cacapp.R;
 
 
-public class MainFragment extends Fragment {
+public class DepositionMainFragment extends Fragment {
     private View view;
 
     private Button btnAddPoop;
@@ -57,7 +57,7 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.main_fragment, container, false);
+        view = inflater.inflate(R.layout.fragment_deposition_main, container, false);
         initViews(view);
         LoadData();
         InitListeners();

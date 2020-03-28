@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_profile_24dp"
+        android:title="Perfil">
+
+    </item>
     <item android:title="Síntomas">
         <menu>
             <item
                 android:id="@+id/symptom_home"
-                android:icon="@drawable/ic_home"
+                android:icon="@drawable/ic_symptom"
                 android:title="Principal">
 
             </item>
@@ -14,14 +20,14 @@
         <menu>
             <item
                 android:id="@+id/home"
-                android:icon="@drawable/ic_home"
-                android:title="Principal">
+                android:icon="@drawable/ic_deposition"
+                android:title="Ir al baño">
 
             </item>
             <item
                 android:id="@+id/diary"
                 android:icon="@drawable/ic_list"
-                android:title="Diario">
+                android:title="Registro">
 
             </item>
             <item
@@ -34,12 +40,6 @@
     </item>
     <item android:title="Configuración">
         <menu>
-            <item
-                android:id="@+id/profile"
-                android:icon="@drawable/ic_home"
-                android:title="Perfil">
-
-            </item>
             <item
                 android:id="@+id/settings"
                 android:icon="@drawable/ic_list"

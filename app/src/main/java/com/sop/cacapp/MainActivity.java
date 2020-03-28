@@ -21,7 +21,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sop.cacapp.Fragments.FecalDiaryFragment;
-import com.sop.cacapp.Fragments.MainFragment;
+import com.sop.cacapp.Fragments.DepositionMainFragment;
 import com.sop.cacapp.Fragments.PoopStatisticsFragment;
 import com.sop.cacapp.Fragments.ProfileFragment;
 
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             // Load main fragment
             fragmentManager = getSupportFragmentManager();
             fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.container, new MainFragment());
+            fragmentTransaction.add(R.id.container, new ProfileFragment());
             fragmentTransaction.commit();
         }
 
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction = fragmentManager.beginTransaction();
                 switch (menuItem.getItemId()) {
                     case R.id.home:
-                        fragmentTransaction.replace(R.id.container, new MainFragment());
+                        fragmentTransaction.replace(R.id.container, new DepositionMainFragment());
                         break;
                     case R.id.diary:
                         fragmentTransaction.replace(R.id.container, new FecalDiaryFragment());
