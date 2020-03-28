@@ -24,6 +24,7 @@ import com.sop.cacapp.Fragments.FecalDiaryFragment;
 import com.sop.cacapp.Fragments.DepositionMainFragment;
 import com.sop.cacapp.Fragments.PoopStatisticsFragment;
 import com.sop.cacapp.Fragments.ProfileFragment;
+import com.sop.cacapp.Fragments.SymptomsMainFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -108,10 +109,16 @@ public class MainActivity extends AppCompatActivity {
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 switch (menuItem.getItemId()) {
-                    case R.id.home:
+                    case R.id.profile:
+                        fragmentTransaction.replace(R.id.container, new ProfileFragment());
+                        break;
+                    case R.id.symptomsHome:
+                        fragmentTransaction.replace(R.id.container, new SymptomsMainFragment());
+                        break;
+                    case R.id.depositionHome:
                         fragmentTransaction.replace(R.id.container, new DepositionMainFragment());
                         break;
-                    case R.id.diary:
+                    case R.id.depostionRecords:
                         fragmentTransaction.replace(R.id.container, new FecalDiaryFragment());
                         break;
                     case R.id.depositionStatistics:
@@ -122,8 +129,6 @@ public class MainActivity extends AppCompatActivity {
                         new LoaderDialog(MainActivity.this).startLoading();
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
                         finish();
-                    case R.id.profile:
-                        fragmentTransaction.replace(R.id.container, new ProfileFragment());
                         break;
                 }
                 fragmentTransaction.commit();

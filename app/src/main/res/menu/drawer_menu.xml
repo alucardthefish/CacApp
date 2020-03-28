@@ -9,7 +9,7 @@
     <item android:title="Síntomas">
         <menu>
             <item
-                android:id="@+id/symptom_home"
+                android:id="@+id/symptomsHome"
                 android:icon="@drawable/ic_symptom"
                 android:title="Principal">
 
@@ -19,13 +19,13 @@
     <item android:title="Deposiciones">
         <menu>
             <item
-                android:id="@+id/home"
+                android:id="@+id/depositionHome"
                 android:icon="@drawable/ic_deposition"
                 android:title="Ir al baño">
 
             </item>
             <item
-                android:id="@+id/diary"
+                android:id="@+id/depostionRecords"
                 android:icon="@drawable/ic_list"
                 android:title="Registro">
 
