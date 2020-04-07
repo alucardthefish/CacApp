@@ -180,7 +180,8 @@ public class DepositionMainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 float satisfaction = ratingBarDepositionSatisfaction.getRating();
-                PoopOccurrence poopOccurrence = new PoopOccurrence(satisfaction);
+                PoopOccurrence poopOccurrence = new PoopOccurrence();
+                poopOccurrence.setSatisfaction(satisfaction);
                 PoopOccurrencePersistent dbAccessor = new PoopOccurrencePersistent();
                 dbAccessor.addPoopOccurrence(view, poopOccurrence);
 

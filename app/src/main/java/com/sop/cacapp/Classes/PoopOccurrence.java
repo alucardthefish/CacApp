@@ -12,16 +12,15 @@ public class PoopOccurrence {
 
     public PoopOccurrence() {
         this.occurrenceTime = new Timestamp(new Date());
-    }
-
-    public PoopOccurrence(float satisfaction) {
-        this.satisfaction = satisfaction;
-        //this.occurrenceDateTime = LocalDateTime.now();
-        this.occurrenceTime = new Timestamp(new Date());
+        this.satisfaction = 3.0f;
     }
 
     public float getSatisfaction() {
         return satisfaction;
+    }
+
+    public void setSatisfaction(float satisfaction) {
+        this.satisfaction = satisfaction;
     }
 
     public Timestamp getOccurrenceTime() {
