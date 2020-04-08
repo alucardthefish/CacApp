@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/ivSymptomPicture"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+
+        <TextView
+            android:id="@+id/tvSymptomDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Febrero 22 de 2020"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/ivSymptomPicture"
+            android:layout_toEndOf="@id/ivSymptomPicture"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/tvSymptomTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="05:33 PM"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_below="@id/tvSymptomDate"
+            android:layout_toRightOf="@id/ivSymptomPicture"
+            android:layout_toEndOf="@id/ivSymptomPicture"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"/>
+
+        <RatingBar
+            android:id="@+id/rbSymptomIntensity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvSymptomTime"
+            android:layout_toRightOf="@id/ivSymptomPicture"
+            android:layout_toEndOf="@id/ivSymptomPicture"
+            android:transformPivotX="0dp"
+            android:transformPivotY="0dp"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:numStars="5"
+            android:rating="3"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:isIndicator="true" />
+
+        <TextView
+            android:id="@+id/tvSymptomDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description..."
+            android:textSize="20sp"
+            android:textStyle="normal"
+            android:layout_toRightOf="@id/ivSymptomPicture"
+            android:layout_toEndOf="@id/ivSymptomPicture"
+            android:layout_below="@id/rbSymptomIntensity"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"/>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
