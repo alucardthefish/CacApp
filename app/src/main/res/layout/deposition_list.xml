@@ -18,7 +18,7 @@
             android:id="@+id/ivDepositionIcon"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/shit3"></ImageView>
+            android:src="@drawable/shit3"/>
         
         <TextView
             android:id="@+id/tvDate"
