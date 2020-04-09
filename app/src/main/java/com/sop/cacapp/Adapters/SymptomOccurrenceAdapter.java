@@ -54,8 +54,8 @@ public class SymptomOccurrenceAdapter extends RecyclerView.Adapter<SymptomOccurr
         String patternTwo = "hh:mm aa";
         Locale current = context.getResources().getConfiguration().locale;
         Symptom currentSymptom = symptomsList.get(position);
-        holder.tvSymptomDate.setText(new SimpleDateFormat(patternOne, current).format(currentSymptom.getOccurrenceDate()));
-        holder.tvSymptomTime.setText(new SimpleDateFormat(patternTwo, current).format(currentSymptom.getOccurrenceDate()));
+        holder.tvSymptomDate.setText(new SimpleDateFormat(patternOne, current).format(currentSymptom.toDate()));
+        holder.tvSymptomTime.setText(new SimpleDateFormat(patternTwo, current).format(currentSymptom.toDate()));
         holder.rbSymptomIntensity.setRating(currentSymptom.getIntensity());
         holder.tvSymptomDescription.setText(currentSymptom.getDescription().length() > 50 ?
                 String.format(currentSymptom.getDescription().substring(0, 49) + "%s", "...") :

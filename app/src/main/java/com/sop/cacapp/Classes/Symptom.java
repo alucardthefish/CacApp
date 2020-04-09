@@ -1,16 +1,21 @@
 package com.sop.cacapp.Classes;
 
+import java.util.UUID;
+
 public class Symptom extends TimeOccurrence {
 
+    private String id;
     private String description;
     private float intensity;
 
     public Symptom() {
+        this.id = UUID.randomUUID().toString();
         this.description = "";
         this.intensity = 3.0f;
     }
 
     public Symptom(String description, float intensity) {
+        this.id = UUID.randomUUID().toString();
         this.description = description;
         this.intensity = intensity;
     }
@@ -25,6 +30,10 @@ public class Symptom extends TimeOccurrence {
 
     public float getIntensity() {
         return intensity;
+    }
+
+    public String getId() {
+        return id;
     }
 
     @Override

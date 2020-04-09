@@ -6,17 +6,35 @@
     android:orientation="vertical"
     tools:context=".Fragments.SymptomsMainFragment">
 
-    <TextView
-        android:id="@+id/tvNoSymptoms"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Symptom Main Fragment Under Construction"
-        android:layout_gravity="center"
-        android:gravity="center"/>
+        android:layout_height="match_parent">
 
-    <com.sop.cacapp.CustomViewClasses.CustomRecyclerView
-        android:id="@+id/customRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/tvNoSymptoms"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Symptom Main Fragment Under Construction"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <com.sop.cacapp.CustomViewClasses.CustomRecyclerView
+            android:id="@+id/customRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddSymptom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/ic_add_white_24dp"
+            android:contentDescription="Agregar symptom"
+            android:layout_margin="16dp" />
+
+    </FrameLayout>
+
+
+
 
 </LinearLayout>
