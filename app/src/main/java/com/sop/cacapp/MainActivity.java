@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     // End new
 
+    private LoaderDialog loaderDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
 
+        loaderDialog = new LoaderDialog(MainActivity.this);
 
         View header = navigationView.getHeaderView(0); // Instance of header view layout
         tvHeaderUserName = header.findViewById(R.id.tvHeaderUserName);
@@ -76,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize listeners
         initListeners();
-        // TODO https://www.youtube.com/watch?v=Wf7DDIaRYjk
-        // TODO https://www.youtube.com/watch?v=JlfW4UvRiwc
     }
 
     @Override
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.signOut:
                         mAuth.signOut();
-                        new LoaderDialog(MainActivity.this).startLoading();
+                        loaderDialog.startLoading();
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
                         finish();
                         break;
@@ -135,5 +136,11 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        loaderDialog.stopLoading();
     }
 }
