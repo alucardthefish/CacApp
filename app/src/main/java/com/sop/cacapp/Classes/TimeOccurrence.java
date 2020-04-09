@@ -16,7 +16,8 @@ public class TimeOccurrence {
         return occurrenceTimestamp;
     }
 
-    public Date getOccurrenceDate() {
-        return this.occurrenceTimestamp.toDate();
+    public Date toDate() {
+        Date dateOfOccurrence = occurrenceTimestamp.toDate();
+        return dateOfOccurrence;
     }
 }

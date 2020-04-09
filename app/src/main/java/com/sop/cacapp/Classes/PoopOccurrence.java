@@ -5,13 +5,11 @@ import com.google.firebase.Timestamp;
 
 import java.util.Date;
 
-public class PoopOccurrence {
+public class PoopOccurrence extends TimeOccurrence{
 
     private float satisfaction;
-    private Timestamp occurrenceTime;
 
     public PoopOccurrence() {
-        this.occurrenceTime = new Timestamp(new Date());
         this.satisfaction = 3.0f;
     }
 
@@ -21,9 +19,5 @@ public class PoopOccurrence {
 
     public void setSatisfaction(float satisfaction) {
         this.satisfaction = satisfaction;
-    }
-
-    public Timestamp getOccurrenceTime() {
-        return occurrenceTime;
     }
 }
