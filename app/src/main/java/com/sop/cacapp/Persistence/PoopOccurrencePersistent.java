@@ -80,17 +80,17 @@ public class PoopOccurrencePersistent {
                     if (depositionCounter > 0) {
                         Timestamp first_date = documentSnapshot.getTimestamp("first_deposition_date");
                         long firstDepositionTime = first_date.toDate().getTime();
-                        long totalTime = poopOccurrence.getOccurrenceTime().toDate().getTime() - firstDepositionTime;
+                        long totalTime = poopOccurrence.toDate().getTime() - firstDepositionTime;
                         long deposition_mean_frequency = totalTime / (depositionCounter);
-                        data.put("last_deposition_date", poopOccurrence.getOccurrenceTime());
+                        data.put("last_deposition_date", poopOccurrence.getOccurrenceTimestamp());
                         data.put("deposition_mean_frequency", deposition_mean_frequency);
 
                         CreateDepositionAndUpdateCalculatedData(poopOccurrence, data, view);
 
                     } else {
                         // Initial: enters once
-                        data.put("last_deposition_date", poopOccurrence.getOccurrenceTime());
-                        data.put("first_deposition_date", poopOccurrence.getOccurrenceTime());
+                        data.put("last_deposition_date", poopOccurrence.getOccurrenceTimestamp());
+                        data.put("first_deposition_date", poopOccurrence.getOccurrenceTimestamp());
                         CreateDepositionAndUpdateCalculatedData(poopOccurrence, data, view);
                     }
                 } else {

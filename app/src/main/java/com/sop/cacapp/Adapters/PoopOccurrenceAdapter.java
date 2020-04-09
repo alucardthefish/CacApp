@@ -49,7 +49,7 @@ public class PoopOccurrenceAdapter extends RecyclerView.Adapter<PoopOccurrenceAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Timestamp poopOccurrenceDateTime = model.get(position).getOccurrenceTime();
+        Timestamp poopOccurrenceDateTime = model.get(position).getOccurrenceTimestamp();
         float poopOccurrenceSatisfaction = model.get(position).getSatisfaction();
         Date date = poopOccurrenceDateTime.toDate();
         String patternOne = "dd MMMM yyyy";
