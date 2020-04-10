@@ -63,7 +63,7 @@ public class FecalDiaryFragment extends Fragment {
     public void loadList() {
         CollectionReference poopOccurrencesReference = new PoopOccurrencePersistent().getPoopOccurrencesRef();
         poopOccurrencesReference
-                .orderBy("occurrenceTime", Query.Direction.DESCENDING)
+                .orderBy("occurrenceTimestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
