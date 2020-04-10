@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,13 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.sop.cacapp.Adapters.SymptomOccurrenceAdapter;
 import com.sop.cacapp.Classes.Symptom;
 import com.sop.cacapp.CustomViewClasses.CustomRecyclerView;
@@ -20,6 +28,7 @@ import com.sop.cacapp.Persistence.SymptomPersistent;
 import com.sop.cacapp.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class SymptomsMainFragment extends Fragment {
@@ -31,6 +40,7 @@ public class SymptomsMainFragment extends Fragment {
     private ArrayList<Symptom> symptomArrayList;
     private TextView emptyView;
     private FloatingActionButton fabAddSymptom;
+    private ListenerRegistration loadSymptomsListener;
 
     public SymptomsMainFragment() {
         // Required empty public constructor
@@ -70,6 +80,8 @@ public class SymptomsMainFragment extends Fragment {
             }
         });
 
+        loadSymptoms();
+
         return view;
     }
 
@@ -89,11 +101,69 @@ public class SymptomsMainFragment extends Fragment {
 
     private void addSymptom() {
         Symptom s1 = new Symptom("Hola mundo este es mi primer sintoma vamos a ver como nos va con la app", 2.0f);
-        symptomArrayList.add(s1);
+        //symptomArrayList.add(s1);
 
         SymptomPersistent symptomPersistent = new SymptomPersistent();
         symptomPersistent.addSymptom(s1, view);
 
-        symptomAdapter.notifyDataSetChanged();
+        //symptomAdapter.notifyDataSetChanged();
+    }
+
+    private void loadSymptoms() {
+        CollectionReference db = new SymptomPersistent().getSymptomsRef();
+        Query query = db.orderBy("occurrenceTimestamp", Query.Direction.DESCENDING);
+        loadSymptomsListener = query
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.d("loadSymptoms", e.getMessage());
+                            return;
+                        }
+
+                        String source = queryDocumentSnapshots != null &&
+                                queryDocumentSnapshots.getMetadata().hasPendingWrites() ? "Local" : "Server";
+
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            /*for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
+                                Symptom currentSymptom = ds.toObject(Symptom.class);
+                                symptomArrayList.add(currentSymptom);
+                            }*/
+
+                            int counter = 1;
+                            List<DocumentChange> changes = queryDocumentSnapshots.getDocumentChanges();
+                            Log.d("LenChanges", "Number of changed elements: " + changes.size() + " and SOURCE = " + source);
+                            for (DocumentChange dc : changes) {
+                                Log.d("COUNTER", "Element " + counter + " Date_: " + dc.getDocument().getTimestamp("occurrenceTimestamp").toDate().toString());
+                                switch (dc.getType()) {
+                                    case ADDED:
+                                        Log.d("ADDED", "Algun dato se agrego y su oldindex es " + dc.getOldIndex() + " y su newindex es " + dc.getNewIndex());
+                                        symptomArrayList.add(dc.getNewIndex(), dc.getDocument().toObject(Symptom.class));
+                                        break;
+                                    case REMOVED:
+                                        Log.d("REMOVED", "Algun dato se elimino y su oldindex es" + dc.getOldIndex() + " y su newindex es " + dc.getNewIndex());
+                                        symptomArrayList.remove(dc.getOldIndex());
+                                        break;
+                                    case MODIFIED:
+                                        Log.d("MODIFIED", "Algun dato se modifico y su oldindex es" + dc.getOldIndex() + " y su newindex es " + dc.getNewIndex());
+                                        symptomArrayList.set(dc.getOldIndex(), dc.getDocument().toObject(Symptom.class));
+                                        break;
+                                    default:
+                                        Log.d("DEFAULT", "Solo carga de dato");
+                                        break;
+                                }
+                                counter++;
+                            }
+                            symptomAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("SMF", "on Destroy fragment");
+        loadSymptomsListener.remove();
     }
 }
