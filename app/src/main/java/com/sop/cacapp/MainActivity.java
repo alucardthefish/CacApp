@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sop.cacapp.CustomViewClasses.Utils;
 import com.sop.cacapp.Fragments.FecalDiaryFragment;
 import com.sop.cacapp.Fragments.DepositionMainFragment;
 import com.sop.cacapp.Fragments.PoopStatisticsFragment;
@@ -76,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
         tvHeaderUserName = header.findViewById(R.id.tvHeaderUserName);
         tvHeaderUserEmail = header.findViewById(R.id.tvHeaderUserEmail);
         ivHeaderUserIcon = header.findViewById(R.id.ivHeaderImage);
+
+        Utils.setSystemBarColor(this, R.color.colorToolbar);
 
         // Initialize listeners
         initListeners();
