@@ -198,6 +198,9 @@ public class SymptomsMainFragment extends Fragment {
                         }
                     }
                 });
+        if (symptomArrayList.isEmpty()) {
+            loaderDialog.stopLoading();
+        }
     }
 
     @Override
@@ -206,6 +209,13 @@ public class SymptomsMainFragment extends Fragment {
         Log.d("SMF", "on Destroy fragment");
         loadSymptomsListener.remove();
         loaderDialog.stopLoading();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("SMF", "on Pause fragment");
+        loadSymptomsListener.remove();
     }
 
     private void enableActionMode(int position) {
@@ -236,6 +246,11 @@ public class SymptomsMainFragment extends Fragment {
         }
     }
 
+    private void deleteSymptoms() {
+        SymptomPersistent symptomPersistent = new SymptomPersistent();
+        symptomPersistent.deleteSymptoms(symptomAdapter.getSelectedSymptoms(), view);
+    }
+
     private class ActionModeCallback implements ActionMode.Callback {
 
         @Override
@@ -255,7 +270,7 @@ public class SymptomsMainFragment extends Fragment {
             int id = item.getItemId();
             switch (id) {
                 case R.id.action_delete:
-                    //deleteInboxes();
+                    deleteSymptoms();
                     mode.finish();
                     fabAddSymptom.show();
                     flag = true;

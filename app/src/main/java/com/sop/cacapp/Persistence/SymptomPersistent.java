@@ -14,9 +14,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.sop.cacapp.Classes.Symptom;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SymptomPersistent {
@@ -67,6 +69,26 @@ public class SymptomPersistent {
                         } else {
                             Log.d("addSymptom", "Sintoma no pudo ser agregado");
                             Log.w("addSymptom", task.getException().getLocalizedMessage());
+                        }
+                    }
+                });
+    }
+
+    public void deleteSymptoms(List<Symptom> symptoms, final View view) {
+        WriteBatch batch = mDataBase.batch();
+        for (Symptom symptom : symptoms) {
+            String docId = symptom.getId();
+            DocumentReference docRef = symptomsRef.document(docId);
+            batch.delete(docRef);
+        }
+        batch.commit()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isComplete() && task.isSuccessful()) {
+                            Toast.makeText(view.getContext(), "Sintomas eliminados", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(view.getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
