@@ -5,7 +5,9 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sop.cacapp.Classes.Symptom;
@@ -33,17 +36,19 @@ public class CreateSymptomFragment extends Fragment {
 
     public CreateSymptomFragment() {
         // Required empty public constructor
+        Log.d("CreateSymptomFragment", "Constructor");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d("CreateSymptomFragment", "onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("CreateSymptomFragment", "onCreateView");
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_create_symptom, container, false);
 
@@ -51,6 +56,12 @@ public class CreateSymptomFragment extends Fragment {
         initActionMode();
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("CreateSymptomFragment", "onDestroy");
     }
 
     private void initViews() {
@@ -79,13 +90,17 @@ public class CreateSymptomFragment extends Fragment {
                 switch (id) {
                     case R.id.action_create:
                         createSymptom();
+                        flag = true;
+                        break;
+                    default:
+                        break;
                 }
-                return false;
+                return flag;
             }
 
             @Override
             public void onDestroyActionMode(ActionMode mode) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().onBackPressed();
             }
         });
     }
@@ -97,7 +112,7 @@ public class CreateSymptomFragment extends Fragment {
             Symptom symptom = new Symptom(symptomDescription, symptomIntensity);
             SymptomPersistent symptomPersistent = new SymptomPersistent();
             symptomPersistent.addSymptom(symptom, view);
-            goBack();
+            actionMode.finish();
         }
     }
 
@@ -118,7 +133,4 @@ public class CreateSymptomFragment extends Fragment {
         return flag;
     }
 
-    private void goBack() {
-        getActivity().getSupportFragmentManager().popBackStack();
-    }
 }
