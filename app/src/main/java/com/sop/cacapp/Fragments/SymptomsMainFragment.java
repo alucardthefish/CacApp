@@ -6,6 +6,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -100,6 +102,7 @@ public class SymptomsMainFragment extends Fragment {
                     enableActionMode(position);
                 } else {
                     Toast.makeText(view.getContext(), "Se quiere ver el elemento: " + symptom.toString(), Toast.LENGTH_LONG).show();
+                    //seeSymptom();
                 }
             }
 
@@ -131,6 +134,10 @@ public class SymptomsMainFragment extends Fragment {
     }
 
     private void addSymptom() {
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container, new CreateSymptomFragment()).addToBackStack("symptomMain").commit();
         //enableActionMode();
         //Symptom s1 = new Symptom("Hola mundo este es mi primer sintoma vamos a ver como nos va con la app", 2.0f);
 
