@@ -101,8 +101,8 @@ public class SymptomsMainFragment extends Fragment {
                 if (symptomAdapter.getSelectedSymptomsCount() > 0) {
                     enableActionMode(position);
                 } else {
-                    Toast.makeText(view.getContext(), "Se quiere ver el elemento: " + symptom.toString(), Toast.LENGTH_LONG).show();
-                    //seeSymptom();
+                    seeSymptom(symptom);
+
                 }
             }
 
@@ -143,6 +143,22 @@ public class SymptomsMainFragment extends Fragment {
 
         //SymptomPersistent symptomPersistent = new SymptomPersistent();
         //symptomPersistent.addSymptom(s1, view);
+    }
+
+    private void seeSymptom(Symptom symptom) {
+
+        Bundle bundle = new Bundle();
+        bundle.putFloat("symptomIntensity", symptom.getIntensity());
+        bundle.putString("symptomDesc", symptom.getDescription());
+        bundle.putLong("symptomDateLong", symptom.getOccurrenceTimestamp().toDate().getTime());
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        ViewSymptomFragment viewSymptomFragment = new ViewSymptomFragment();
+        viewSymptomFragment.setArguments(bundle);
+
+        fragmentTransaction.replace(R.id.container, viewSymptomFragment).addToBackStack("symptomMain").commit();
     }
 
     private void loadSymptoms() {
@@ -275,6 +291,9 @@ public class SymptomsMainFragment extends Fragment {
                     fabAddSymptom.show();
                     flag = true;
                     break;
+                case R.id.action_edit:
+                    mode.finish();
+                    flag = true;
                 default:
                     break;
             }
