@@ -147,18 +147,33 @@ public class SymptomsMainFragment extends Fragment {
 
     private void seeSymptom(Symptom symptom) {
 
-        Bundle bundle = new Bundle();
-        bundle.putFloat("symptomIntensity", symptom.getIntensity());
-        bundle.putString("symptomDesc", symptom.getDescription());
-        bundle.putLong("symptomDateLong", symptom.getOccurrenceTimestamp().toDate().getTime());
-
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         ViewSymptomFragment viewSymptomFragment = new ViewSymptomFragment();
-        viewSymptomFragment.setArguments(bundle);
+        viewSymptomFragment.setArguments(getBundleSymptom(symptom));
 
         fragmentTransaction.replace(R.id.container, viewSymptomFragment).addToBackStack("symptomMain").commit();
+    }
+
+    private void editSymptom(Symptom symptom) {
+
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        EditSymptomFragment editSymptomFragment = new EditSymptomFragment();
+        editSymptomFragment.setArguments(getBundleSymptom(symptom));
+        fragmentTransaction.replace(R.id.container, editSymptomFragment)
+                .addToBackStack("symptomMain")
+                .commit();
+
+    }
+
+    private Bundle getBundleSymptom(Symptom symptom) {
+        Bundle bundle = new Bundle();
+        bundle.putString("symptomId", symptom.getId());
+        bundle.putFloat("symptomIntensity", symptom.getIntensity());
+        bundle.putString("symptomDesc", symptom.getDescription());
+        bundle.putLong("symptomDateLong", symptom.getOccurrenceTimestamp().toDate().getTime());
+        return bundle;
     }
 
     private void loadSymptoms() {
@@ -292,6 +307,10 @@ public class SymptomsMainFragment extends Fragment {
                     flag = true;
                     break;
                 case R.id.action_edit:
+                    if (symptomAdapter.getSelectedSymptomsCount() == 1) {
+                        Symptom symp = symptomAdapter.getSelectedSymptoms().get(0);
+                        editSymptom(symp);
+                    }
                     mode.finish();
                     flag = true;
                 default:
