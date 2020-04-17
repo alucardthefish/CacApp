@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.sop.cacapp.Classes.Profile;
 import com.sop.cacapp.Persistence.ProfilePersistent;
 
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -34,9 +36,6 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText etEmail;
     private EditText etPass;
     private EditText etName;
-    private EditText etAge;
-    private EditText etHeight;
-    private EditText etWeight;
     private EditText etDateOfBirth;
     private RadioGroup rgGender;
     private Button btnRegister;
@@ -45,10 +44,8 @@ public class RegisterActivity extends AppCompatActivity {
     private String email;
     private String pass;
     private String name;
-    private int age;
-    private int height;
-    private double weight;
     private String gender;
+    private Timestamp dateOfBirth;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDataBase;
@@ -64,9 +61,6 @@ public class RegisterActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.eTRegisterEmail);
         etPass = findViewById(R.id.eTRegisterPassword);
         etName = findViewById(R.id.etUserName);
-        etAge = findViewById(R.id.etUserAge);
-        etHeight = findViewById(R.id.etUserHeight);
-        etWeight = findViewById(R.id.etUserWeight);
         etDateOfBirth = findViewById(R.id.etDateOfBirth);
         rgGender = findViewById(R.id.genderOptions);
         btnRegister = findViewById(R.id.btnToRegister);
@@ -75,10 +69,8 @@ public class RegisterActivity extends AppCompatActivity {
         email = "";
         pass = "";
         name = "";
-        age = 0;
-        height = 0;
-        weight = 0.0;
         gender = "female";
+        dateOfBirth = null;
 
         initListeners();
     }
@@ -92,9 +84,6 @@ public class RegisterActivity extends AppCompatActivity {
                 email = etEmail.getText().toString();
                 pass = etPass.getText().toString();
                 name = etName.getText().toString();
-                age =  Integer.parseInt(etAge.getText().toString());
-                height = Integer.parseInt(etHeight.getText().toString());
-                weight = Double.parseDouble(etWeight.getText().toString());
                 gender = checkGender();
                 if (!email.isEmpty() && !pass.isEmpty() && !name.isEmpty()) {
                     registerUser();
@@ -113,12 +102,13 @@ public class RegisterActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Toast.makeText(RegisterActivity.this, "Registrando...", Toast.LENGTH_LONG).show();
 
-                    final Profile profile = new Profile(name,
-                            email,
-                            age,
-                            height,
-                            weight,
-                            gender);
+                    final Profile profile = new Profile();
+                    profile.setName(name);
+                    profile.setEmail(email);
+                    profile.setGender(gender);
+                    if (dateOfBirth != null) {
+                        profile.setBirthDate(dateOfBirth);
+                    }
 
                     FirebaseUser user = mAuth.getCurrentUser();
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -195,6 +185,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Locale current = getResources().getConfiguration().locale;
                         Calendar newDate = Calendar.getInstance();
                         newDate.set(year, month, dayOfMonth);
+                        dateOfBirth = new Timestamp(newDate.getTime());
                         etDateOfBirth.setText(new SimpleDateFormat(pattern, current).format(newDate.getTime()));
                     }
                 }, currentYear, currentMonth, currentDay);

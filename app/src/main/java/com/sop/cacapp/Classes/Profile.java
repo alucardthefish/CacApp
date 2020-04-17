@@ -8,20 +8,19 @@ public class Profile {
 
     private String name;
     private String email;
-    private int age;
     private int height;
     private double weight;
     private String gender;
+    private Timestamp birthDate;
     private Timestamp registerDate;
 
     public Profile(){
-
+        this.registerDate = new Timestamp(new Date());
     }
 
-    public Profile(String name, String email, int age, int height, double weight, String gender) {
+    public Profile(String name, String email, int height, double weight, String gender) {
         this.name = name;
         this.email = email;
-        this.age = age;
         this.height = height;
         this.weight = weight;
         this.gender = gender;
@@ -34,10 +33,6 @@ public class Profile {
 
     public String getEmail() {
         return email;
-    }
-
-    public int getAge() {
-        return age;
     }
 
     public int getHeight() {
@@ -56,10 +51,6 @@ public class Profile {
         this.email = email;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
-
     public void setHeight(int height) {
         this.height = height;
     }
@@ -74,6 +65,14 @@ public class Profile {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public Timestamp getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Timestamp birthDate) {
+        this.birthDate = birthDate;
     }
 
     public Timestamp getRegisterDate() {

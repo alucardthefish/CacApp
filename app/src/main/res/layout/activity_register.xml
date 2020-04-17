@@ -74,29 +74,7 @@
         android:hint="Fecha de nacimiento"
         android:inputType="date"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/etUserAge"
-        android:hint="Edad"
-        android:layout_margin="10dp"
-        android:inputType="number"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/etUserHeight"
-        android:hint="Estatura (cm)"
-        android:layout_margin="10dp"
-        android:inputType="number"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/etUserWeight"
-        android:hint="Peso (kg)"
-        android:layout_margin="10dp"
-        android:inputType="number"/>
 
     <Button
         android:id="@+id/btnToRegister"
