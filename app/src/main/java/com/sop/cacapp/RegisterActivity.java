@@ -3,11 +3,13 @@ package com.sop.cacapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -22,6 +24,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.sop.cacapp.Classes.Profile;
 import com.sop.cacapp.Persistence.ProfilePersistent;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -31,6 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText etAge;
     private EditText etHeight;
     private EditText etWeight;
+    private EditText etDateOfBirth;
     private RadioGroup rgGender;
     private Button btnRegister;
     private LoaderDialog loadingDialog;
@@ -60,6 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
         etAge = findViewById(R.id.etUserAge);
         etHeight = findViewById(R.id.etUserHeight);
         etWeight = findViewById(R.id.etUserWeight);
+        etDateOfBirth = findViewById(R.id.etDateOfBirth);
         rgGender = findViewById(R.id.genderOptions);
         btnRegister = findViewById(R.id.btnToRegister);
         loadingDialog = new LoaderDialog(RegisterActivity.this);
@@ -71,6 +79,8 @@ public class RegisterActivity extends AppCompatActivity {
         height = 0;
         weight = 0.0;
         gender = "female";
+
+        initListeners();
     }
 
     @Override
@@ -168,5 +178,28 @@ public class RegisterActivity extends AppCompatActivity {
             gender = "male";
         }
         return gender;
+    }
+
+    private void initListeners() {
+        etDateOfBirth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+                int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+                int currentMonth = calendar.get(Calendar.MONTH);
+                int currentYear = calendar.get(Calendar.YEAR);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(RegisterActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        String pattern = "dd MMMM yyyy";
+                        Locale current = getResources().getConfiguration().locale;
+                        Calendar newDate = Calendar.getInstance();
+                        newDate.set(year, month, dayOfMonth);
+                        etDateOfBirth.setText(new SimpleDateFormat(pattern, current).format(newDate.getTime()));
+                    }
+                }, currentYear, currentMonth, currentDay);
+                datePickerDialog.show();
+            }
+        });
     }
 }
