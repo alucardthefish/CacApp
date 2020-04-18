@@ -13,9 +13,11 @@ public class Profile {
     private String gender;
     private Timestamp birthDate;
     private Timestamp registerDate;
+    private HealthBackground healthBackground;
 
     public Profile(){
         this.registerDate = new Timestamp(new Date());
+        this.healthBackground = new HealthBackground();
     }
 
     public Profile(String name, String email, int height, double weight, String gender) {
@@ -25,6 +27,7 @@ public class Profile {
         this.weight = weight;
         this.gender = gender;
         this.registerDate = new Timestamp(new Date());
+        this.healthBackground = new HealthBackground();
     }
 
     public String getName() {
@@ -33,6 +36,14 @@ public class Profile {
 
     public String getEmail() {
         return email;
+    }
+
+    public HealthBackground getHealthBackground() {
+        return healthBackground;
+    }
+
+    public void setHealthBackground(HealthBackground healthBackground) {
+        this.healthBackground = healthBackground;
     }
 
     public int getHeight() {
