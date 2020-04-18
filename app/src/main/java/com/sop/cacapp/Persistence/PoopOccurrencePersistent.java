@@ -130,6 +130,7 @@ public class PoopOccurrencePersistent {
     public Map<String, Object> getMapOfInitialCalculatedData() {
         Map<String, Object> data = new HashMap<>();
         data.put("deposition_counter", 0);
+        data.put("symptoms_counter", 0);
         data.put("last_deposition_date", "NoDate");
         data.put("first_deposition_date", "NoDate");
         data.put("deposition_mean_frequency", 0);

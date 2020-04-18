@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
 import com.sop.cacapp.Classes.Symptom;
@@ -45,22 +46,15 @@ public class SymptomPersistent {
     }
 
     public void addSymptom(Symptom symptom, final View view) {
-        /*symptomsRef.add(symptom)
-                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(view.getContext(), "Sintoma agregado exitosamente", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.d("addSymptom", "Sintoma no pudo ser agregado");
-                            Log.w("addSymptom", task.getException().getLocalizedMessage());
-                            Log.w("addSymptomMsg", task.getException().getMessage());
-                            Log.w("addSymptomStrg", task.getException().toString());
-                        }
-                    }
-                });*/
-        symptomsRef.document(symptom.getId())
-                .set(symptom)
+
+        WriteBatch batch = mDataBase.batch();
+        DocumentReference docSymptom = symptomsRef.document(symptom.getId());
+        PoopOccurrencePersistent pp = new PoopOccurrencePersistent();
+
+        batch.set(docSymptom, symptom);
+        batch.update(pp.getCalculatedDataDocRef(), "symptoms_counter", FieldValue.increment(1));
+
+        batch.commit()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -75,12 +69,15 @@ public class SymptomPersistent {
     }
 
     public void deleteSymptoms(List<Symptom> symptoms, final View view) {
+        PoopOccurrencePersistent pp = new PoopOccurrencePersistent();
         WriteBatch batch = mDataBase.batch();
         for (Symptom symptom : symptoms) {
             String docId = symptom.getId();
             DocumentReference docRef = symptomsRef.document(docId);
             batch.delete(docRef);
         }
+        batch.update(pp.getCalculatedDataDocRef(), "symptoms_counter", FieldValue.increment(-symptoms.size()));
+
         batch.commit()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
