@@ -57,6 +57,10 @@ public class OccurrenceDateTimeHandler {
         return (int) (getTimeDifferenceRespectToDate(date) / TimeUnits.DAY.getMillis());
     }
 
+    public int getTimeElapsedInYearsToDate(Date date) {
+        return (int) (getTimeDifferenceRespectToDate(date) / TimeUnits.YEAR.getMillis());
+    }
+
     public String getTimeElapsedByDate(Date date) {
         long time = getTimeDifferenceRespectToDate(date);
         return getTimeElapsedByDiffTime(time);

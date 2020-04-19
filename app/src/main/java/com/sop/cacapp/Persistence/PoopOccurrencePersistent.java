@@ -66,6 +66,34 @@ public class PoopOccurrencePersistent {
         return poopOccurrencesRef;
     }
 
+    public void getCalculatedData(final CalculatedDataCallback callback) {
+        calculatedDataDocRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            Map<String, Object> calculatedData = new HashMap<String, Object>();
+
+
+                            long depoCounter = documentSnapshot.getLong("deposition_counter");
+                            long sympCounter = documentSnapshot.getLong("symptoms_counter");
+                            long dmf = documentSnapshot.getLong("deposition_mean_frequency");
+
+                            calculatedData.put("deposition_counter", depoCounter);
+                            calculatedData.put("symptoms_counter", sympCounter);
+                            calculatedData.put("last_deposition_date", documentSnapshot.get("last_deposition_date"));
+                            calculatedData.put("first_deposition_date", documentSnapshot.get("first_deposition_date"));
+                            calculatedData.put("deposition_mean_frequency", dmf);
+
+                            callback.onSuccess(calculatedData);
+
+                        } else {
+                            callback.onFailure("Data does not exist");
+                        }
+                    }
+                });
+    }
+
     public void addPoopOccurrence(final View view, final PoopOccurrence poopOccurrence) {
 
         calculatedDataDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -224,5 +252,10 @@ public class PoopOccurrencePersistent {
 
     public interface PoopSatisfactionDataCallback {
         void onCallback(Map<Double, Integer> satisfactionData);
+    }
+
+    public interface CalculatedDataCallback {
+        void onSuccess(Map<String, Object> calculatedData);
+        void onFailure(String message);
     }
 }
