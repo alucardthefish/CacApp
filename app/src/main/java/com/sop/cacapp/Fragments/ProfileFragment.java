@@ -9,8 +9,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.sop.cacapp.Classes.HealthBackground;
 import com.sop.cacapp.Classes.OccurrenceDateTimeHandler;
 import com.sop.cacapp.Classes.Profile;
@@ -26,10 +30,12 @@ public class ProfileFragment extends Fragment {
 
     private View rootView;
 
+    private ImageView ivGenderAvatar;
     private TextView tvProfileUsername;
     private TextView tvProfileNumDays;
     private TextView tvProfileNumSymptoms;
     private TextView tvProfileNumDepositions;
+    private TextView tvActivateEdition;
 
     private TextView tvProfileEmail;
     private TextView tvProfileAge;
@@ -39,6 +45,8 @@ public class ProfileFragment extends Fragment {
     private TextView tvDiagnosedConditions;
     private TextView tvAllergies;
     private TextView tvFamilyBackground;
+
+    private Profile mProfile;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -58,6 +66,7 @@ public class ProfileFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
         initViews();
+        initListeners();
         loadData();
 
 
@@ -65,10 +74,13 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initViews() {
+        ivGenderAvatar = rootView.findViewById(R.id.ivGenderAvatar);
         tvProfileUsername = rootView.findViewById(R.id.tvProfileUsername);
         tvProfileNumDays = rootView.findViewById(R.id.tvProfileNumDays);
         tvProfileNumSymptoms = rootView.findViewById(R.id.tvProfileNumSymptoms);
         tvProfileNumDepositions = rootView.findViewById(R.id.tvProfileNumDepositions);
+
+        tvActivateEdition = rootView.findViewById(R.id.tvActivateEdition);
 
         tvProfileEmail = rootView.findViewById(R.id.tvProfileEmail);
         tvProfileAge = rootView.findViewById(R.id.tvProfileAge);
@@ -79,6 +91,21 @@ public class ProfileFragment extends Fragment {
         tvSurgicalProcedure = rootView.findViewById(R.id.tvSurgicalProcedure);
         tvDiagnosedConditions = rootView.findViewById(R.id.tvDiagnosedConditions);
         tvFamilyBackground = rootView.findViewById(R.id.tvFamilyBackground);
+
+        mProfile = null;
+    }
+
+    private void initListeners() {
+        tvActivateEdition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mProfile != null) {
+                    Toast.makeText(rootView.getContext(), "A editar won", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(rootView.getContext(), "No se puede editar en el momento", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void loadData() {
@@ -87,12 +114,14 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadProfileData() {
+        loadAvatar();
         ProfilePersistent profilePersistent = new ProfilePersistent();
 
         profilePersistent.GetProfile(new ProfilePersistent.MyCallback() {
             @Override
             public void onCallBack(boolean isSuccess, Profile profile) {
                 if (isSuccess) {
+                    mProfile = profile;
                     tvProfileUsername.setText(profile.getName());
 
                     OccurrenceDateTimeHandler timer = new OccurrenceDateTimeHandler(profile.getRegisterDate(), rootView.getContext());
@@ -112,6 +141,15 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+    }
+
+    private void loadAvatar() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            if (user.getPhotoUrl().toString().equals("male")) {
+                ivGenderAvatar.setImageResource(R.drawable.icons8maleuser100);
+            }
+        }
     }
 
     private void loadCounters() {

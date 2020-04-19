@@ -25,6 +25,7 @@
                 android:background="@drawable/profile_header">
                 
                 <ImageView
+                    android:id="@+id/ivGenderAvatar"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:src="@drawable/icons8femaleprofile100"
@@ -152,6 +153,22 @@
             android:orientation="vertical"
             android:layout_marginLeft="60dp"
             android:layout_marginRight="60dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvActivateEdition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Editar"
+                    android:layout_gravity="right"
+                    android:gravity="right"
+                    android:textColor="@android:color/white"
+                    android:background="@android:color/holo_green_dark" />
+            </LinearLayout>
             
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -199,6 +216,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="#FFF333"
                     android:textSize="18sp"
+                    android:text="\?"
                     android:textStyle="normal"/>
 
             </LinearLayout>
@@ -225,6 +243,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="#FFF333"
                     android:textSize="18sp"
+                    android:text="\?"
                     android:textStyle="normal"/>
 
             </LinearLayout>
@@ -251,6 +270,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="#FFF333"
                     android:textSize="18sp"
+                    android:text="\?"
                     android:textStyle="normal"/>
 
             </LinearLayout>
@@ -301,7 +321,7 @@
                     android:textColor="#FFF333"
                     android:textSize="18sp"
                     android:textStyle="normal"
-                    android:text="Ninguno"/>
+                    android:text="\?"/>
 
             </LinearLayout>
 
@@ -330,7 +350,7 @@
                     android:textColor="#FFF333"
                     android:textSize="18sp"
                     android:textStyle="normal"
-                    android:text="Ninguno"/>
+                    android:text="\?"/>
 
             </LinearLayout>
 
@@ -359,7 +379,7 @@
                     android:textColor="#FFF333"
                     android:textSize="18sp"
                     android:textStyle="normal"
-                    android:text="Ninguno"/>
+                    android:text="\?"/>
 
             </LinearLayout>
 
@@ -388,7 +408,7 @@
                     android:textColor="#FFF333"
                     android:textSize="18sp"
                     android:textStyle="normal"
-                    android:text="Ninguno"/>
+                    android:text="\?"/>
 
             </LinearLayout>
 
