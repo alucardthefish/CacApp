@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -101,11 +102,44 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 if (mProfile != null) {
                     Toast.makeText(rootView.getContext(), "A editar won", Toast.LENGTH_SHORT).show();
+                    goEditProfile(mProfile);
                 } else {
                     Toast.makeText(rootView.getContext(), "No se puede editar en el momento", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    private void goEditProfile(Profile profile) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        EditProfileFragment editProfileFragment = new EditProfileFragment();
+        editProfileFragment.setArguments(getBundleProfile(profile));
+        fragmentTransaction.replace(R.id.container, editProfileFragment)
+                .addToBackStack("symptomMain")
+                .commit();
+    }
+
+    private Bundle getBundleProfile(Profile profile) {
+        Bundle bundle = new Bundle();
+
+        bundle.putString("gender", profile.getGender());
+
+        bundle.putString("name", profile.getName());
+        bundle.putLong("birthdayInLong", profile.getBirthDate().toDate().getTime());
+        bundle.putInt("height", profile.getHeight());
+        bundle.putDouble("weight", profile.getWeight());
+
+        HealthBackground hb = profile.getHealthBackground();
+        String allergies = (hb.getAlergies() != null) ? hb.getAlergies() : "Ninguna";
+        String surgicals = (hb.getSurgicalProcedures() != null) ? hb.getSurgicalProcedures() : "Ninguna";
+        String conditions = (hb.getConditionsOrIllnessesDiagnosed() != null) ? hb.getConditionsOrIllnessesDiagnosed() : "Ninguna";
+        String family = (hb.getFamilyBackground() != null) ? hb.getFamilyBackground() : "Ninguna";
+        bundle.putString("allergies", allergies);
+        bundle.putString("surgicals", surgicals);
+        bundle.putString("conditions", conditions);
+        bundle.putString("family", family);
+
+        return bundle;
     }
 
     private void loadData() {
