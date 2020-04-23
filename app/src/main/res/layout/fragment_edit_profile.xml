@@ -66,18 +66,18 @@
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/genderOptions"
+                android:id="@+id/genderEditOptions"
                 android:gravity="center"
                 android:orientation="horizontal">
                 <RadioButton
-                    android:id="@+id/rbFemale"
+                    android:id="@+id/rbEditFemale"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:layout_marginRight="16dp"
                     android:text="Femenino" />
                 <RadioButton
-                    android:id="@+id/rbMale"
+                    android:id="@+id/rbEditMale"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"

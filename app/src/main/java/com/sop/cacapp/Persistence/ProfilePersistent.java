@@ -14,6 +14,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
 import com.sop.cacapp.Classes.Profile;
 
+import java.util.Map;
+
 public class ProfilePersistent {
 
     private FirebaseAuth mAuth;
@@ -71,6 +73,22 @@ public class ProfilePersistent {
                 });
     }
 
+    public void updateProfile(Map<String, Object> updateData, final Callback callback) {
+        WriteBatch batch = mDataBase.batch();
+        batch.update(profileReference, updateData);
+        batch.commit()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            callback.onCallback(true);
+                        } else {
+                            callback.onCallback(false);
+                        }
+                    }
+                });
+    }
+
     public void GetProfile(final MyCallback myCallback) {
         profileReference.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -94,5 +112,9 @@ public class ProfilePersistent {
 
     public interface OnCreateProfileListener {
         void onCallBack(boolean isSuccess);
+    }
+
+    public interface Callback {
+        void onCallback(boolean isSuccess);
     }
 }
