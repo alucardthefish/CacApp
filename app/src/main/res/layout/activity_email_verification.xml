@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".EmailVerificationActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="26sp"
+        android:paddingTop="20dp"
+        android:text="La cuenta no ha sido verificada. Ve al correo electrónico con que hiciste el registro y dale click al link de verificación. \nSi deseas un nuevo link de verificación presiona el boton Enviar verificación. \n\nSi ya verificaste tu cuenta y aún vez éste mensaje, dale al boton refrescar"
+        android:layout_gravity="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="40dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enviar verificación"
+                android:id="@+id/btnEmailVerification"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Refrescar"
+                android:id="@+id/btnLogout"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

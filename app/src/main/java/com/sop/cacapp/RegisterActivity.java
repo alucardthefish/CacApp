@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -15,6 +16,8 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
@@ -101,6 +104,8 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(RegisterActivity.this, "Registrando...", Toast.LENGTH_LONG).show();
+
+                    sendVerificationEmail();
 
                     final Profile profile = new Profile();
                     profile.setName(name);
@@ -190,6 +195,21 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 }, currentYear, currentMonth, currentDay);
                 datePickerDialog.show();
+            }
+        });
+    }
+
+    private void sendVerificationEmail() {
+        final FirebaseUser user = mAuth.getCurrentUser();
+        user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(RegisterActivity.this, String.format("Email enviado a %s. Verifica en tu correo el link para activar cuenta", user.getEmail()), Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("VerificationEmail", "onFailure: Email no fue enviado. " + e.getMessage());
             }
         });
     }

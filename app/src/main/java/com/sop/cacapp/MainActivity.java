@@ -57,11 +57,19 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            // Load main fragment
-            fragmentManager = getSupportFragmentManager();
-            fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.container, new ProfileFragment());
-            fragmentTransaction.commit();
+
+            if (currentUser.isEmailVerified()) {
+                // Load main fragment
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.add(R.id.container, new ProfileFragment());
+                fragmentTransaction.commit();
+            } else {
+                Intent intent = new Intent(MainActivity.this, EmailVerificationActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
         }
 
         toolbar = findViewById(R.id.drawer_toolbar);
