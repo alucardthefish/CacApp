@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_create"
-        android:icon="@drawable/ic_add_white_24dp"
         android:orderInCategory="100"
-        android:title="create"
+        android:title="crear"
         app:showAsAction="always" />
 </menu>

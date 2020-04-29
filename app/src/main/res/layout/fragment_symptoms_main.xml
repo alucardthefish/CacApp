@@ -15,7 +15,8 @@
             android:id="@+id/tvNoSymptoms"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Symptom Main Fragment Under Construction"
+            android:text="Agrega síntomas para tu registro"
+            android:textSize="22sp"
             android:layout_gravity="center"
             android:gravity="center"/>
 
