@@ -26,6 +26,7 @@ import com.sop.cacapp.Fragments.FecalDiaryFragment;
 import com.sop.cacapp.Fragments.DepositionMainFragment;
 import com.sop.cacapp.Fragments.PoopStatisticsFragment;
 import com.sop.cacapp.Fragments.ProfileFragment;
+import com.sop.cacapp.Fragments.SymptomReportFragment;
 import com.sop.cacapp.Fragments.SymptomsMainFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -129,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.symptomsHome:
                         fragmentTransaction.replace(R.id.container, new SymptomsMainFragment());
+                        break;
+                    case R.id.symptomsReports:
+                        fragmentTransaction.replace(R.id.container, new SymptomReportFragment());
                         break;
                     case R.id.depositionHome:
                         fragmentTransaction.replace(R.id.container, new DepositionMainFragment());

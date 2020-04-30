@@ -84,7 +84,6 @@ public class SymptomsMainFragment extends Fragment {
         symptomAdapter = new SymptomOccurrenceAdapter(view.getContext(), symptomArrayList);
 
         customRecyclerView.setAdapter(symptomAdapter);
-        //feedRecycler();
 
         fabAddSymptom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,20 +116,6 @@ public class SymptomsMainFragment extends Fragment {
         loadSymptoms();
 
         return view;
-    }
-
-    private void feedRecycler() {
-        Symptom s1 = new Symptom("Hola mundo este es mi primer sintoma vamos a ver como nos va con la app", 2.0f);
-        Symptom s2 = new Symptom("Como esta mi pierna hoy muy llevada pues me la tronche como un putas", 2.5f);
-        Symptom s3 = new Symptom("Hola mundo no te digo mucho hoy", 4.0f);
-        Symptom s4 = new Symptom("Hola mundo3", 4.0f);
-        symptomArrayList.add(s1);
-        symptomArrayList.add(s2);
-        symptomArrayList.add(s3);
-        symptomArrayList.add(s4);
-
-        symptomAdapter = new SymptomOccurrenceAdapter(getContext(), symptomArrayList);
-        customRecyclerView.setAdapter(symptomAdapter);
     }
 
     private void addSymptom() {
@@ -188,16 +173,11 @@ public class SymptomsMainFragment extends Fragment {
                             return;
                         }
 
-                        //loaderDialog.startLoading();
                         Log.d("loaderDialog", "start");
                         String source = queryDocumentSnapshots != null &&
                                 queryDocumentSnapshots.getMetadata().hasPendingWrites() ? "Local" : "Server";
 
                         if (!queryDocumentSnapshots.isEmpty()) {
-                            /*for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
-                                Symptom currentSymptom = ds.toObject(Symptom.class);
-                                symptomArrayList.add(currentSymptom);
-                            }*/
 
                             int counter = 1;
                             List<DocumentChange> changes = queryDocumentSnapshots.getDocumentChanges();
