@@ -124,7 +124,7 @@
         android:id="@+id/btnAddPoopRecord"
         android:text="Registrar Deposición"
         android:textColor="@android:color/white"
-        android:background="#FF5733"
+        android:background="@color/colorPrimary"
         android:padding="10dp"
         android:layout_gravity="center"
         android:layout_margin="20dp"></Button>
