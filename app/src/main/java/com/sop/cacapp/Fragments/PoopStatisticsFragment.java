@@ -216,6 +216,7 @@ public class PoopStatisticsFragment extends Fragment {
                     lineChart.setData(lineData);
 
                     lineChart.invalidate();
+                    lineChart.getDescription().setEnabled(false);
                     Log.d("Chart", "LineChart loaded");
                 }
             }
@@ -291,9 +292,10 @@ public class PoopStatisticsFragment extends Fragment {
                         pieEntries.add(new PieEntry(value, nameLabels[entry.getKey().intValue()]));
                     }
                 }
-                Description description = new Description();
-                description.setText("Gráfico de pastel fácil");
-                pieChart.setDescription(description);
+                //Description description = new Description();
+                //description.setText("Gráfico de pastel fácil");
+                //pieChart.setDescription(description);
+                pieChart.getDescription().setEnabled(false);
 
                 PieDataSet dataSet = new PieDataSet(pieEntries, "");
                 dataSet.setColors(ColorTemplate.COLORFUL_COLORS);

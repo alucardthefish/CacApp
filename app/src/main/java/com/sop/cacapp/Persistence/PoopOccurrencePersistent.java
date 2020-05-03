@@ -167,7 +167,7 @@ public class PoopOccurrencePersistent {
 
     public void getMyPoopData(final PoopDataCallback callback) {
         poopOccurrencesRef
-                .orderBy("occurrenceTime", Query.Direction.ASCENDING)
+                .orderBy("occurrenceTimestamp", Query.Direction.ASCENDING)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -176,7 +176,7 @@ public class PoopOccurrencePersistent {
                             ArrayList<Date> depositionDates = new ArrayList<>();
                             for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
                                 //depositionDates.add(ds.getTimestamp("occurrenceTime").toDate());
-                                depositionDates.add(ds.getDate("occurrenceTime"));
+                                depositionDates.add(ds.getDate("occurrenceTimestamp"));
                             }
                             ArrayList lineChartDataDict = extractChartData(depositionDates);
                             callback.onCallback(lineChartDataDict);
